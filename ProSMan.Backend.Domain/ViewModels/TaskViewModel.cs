@@ -6,17 +6,17 @@ namespace ProSMan.Backend.Domain.ViewModels
 {
 	public class TaskViewModel
 	{
-		public int Id { get; set; }
+		public Guid Id { get; set; }
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public int TimeEstimate { get; set; }
 		public int ActualSpentTime { get; set; }
-		public string Priority { get; set; }
+		public Priority Priority { get; set; }
 		public bool IsFinished { get; set; }
 
-		public int ProjectId { get; set; }
-		public int CategoryId { get; set; }
-		public int SprintId { get; set; }
+		public Guid ProjectId { get; set; }
+		public Guid CategoryId { get; set; }
+		public Guid SprintId { get; set; }
 	}
 
 	public enum Priority : int

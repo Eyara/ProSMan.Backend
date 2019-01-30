@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ProSMan.Backend.Core.Extensions;
 
@@ -10,6 +11,19 @@ namespace ProSMan.Backend.Model
 		{
 			entity.ToTable("Projects");
 			entity.HasKey(x => x.Id);
+
+			entity.Property(x => x.Id)
+				.IsRequired()
+				.ValueGeneratedNever();
+
+			entity.HasMany(x => x.Categories)
+				.WithOne(y => y.Project);
+
+			entity.HasMany(x => x.Sprints)
+				.WithOne(y => y.Project);
+
+			entity.HasMany(x => x.Tasks)
+				.WithOne(y => y.Project);
 		}
 	}
 }

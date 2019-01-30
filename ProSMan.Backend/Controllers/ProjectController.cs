@@ -37,7 +37,7 @@ namespace ProSMan.Backend.Controllers
 		}
 
 		[HttpGet("GetById")]
-		public async Task<IActionResult> Get(int id)
+		public async Task<IActionResult> Get(Guid id)
 		{
 			var entities = await _dbContext.Projects
 				.Where(x => x.Id == id)
@@ -51,14 +51,32 @@ namespace ProSMan.Backend.Controllers
 		public async Task<IActionResult> Post([FromBody] ProjectViewModel model)
 		{
 			Project project = _mapper.Map<Project>(model);
+			project.Id = Guid.NewGuid();
 			await _dbContext.AddAsync(project);
 			_dbContext.SaveChanges();
 
 			return Ok();
 		}
 
+		[HttpPut]
+		public async Task<IActionResult> UpdateProject([FromBody] ProjectViewModel model)
+		{
+			var entity = await _dbContext.Projects
+				.Where(x => x.Id == model.Id)
+				.SingleOrDefaultAsync();
+
+			if (entity != null)
+			{
+				Project project = _mapper.Map(model, entity);
+				_dbContext.Update(project);
+				_dbContext.SaveChanges();
+			}
+
+			return Ok();
+		}
+
 		[HttpDelete]
-		public async Task<IActionResult> Delete(int id)
+		public async Task<IActionResult> Delete(Guid id)
 		{
 			var entity = await _dbContext.Projects
 				.Where(x => x.Id == id)

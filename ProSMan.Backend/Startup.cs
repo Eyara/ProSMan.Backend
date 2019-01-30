@@ -13,18 +13,18 @@ using Swashbuckle.AspNetCore.Swagger;
 
 namespace ProSMan.Backend
 {
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)	
-        {
-            Configuration = configuration;
-        }
+	public class Startup
+	{
+		public Startup(IConfiguration configuration)
+		{
+			Configuration = configuration;
+		}
 
-        public IConfiguration Configuration { get; }
+		public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
+		// This method gets called by the runtime. Use this method to add services to the container.
+		public void ConfigureServices(IServiceCollection services)
+		{
 			services.AddDbContext<ProSManContext>(options =>
 			{
 				options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"],
@@ -32,6 +32,8 @@ namespace ProSMan.Backend
 			});
 
 			services.AddAutoMapper();
+
+			services.AddCors();
 
 			services.AddMvc();
 
@@ -41,15 +43,21 @@ namespace ProSMan.Backend
 			});
 		}
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+		{
+			if (env.IsDevelopment())
+			{
+				app.UseDeveloperExceptionPage();
+			}
 
-            app.UseMvc();
+			app.UseCors(builder => builder
+				.AllowAnyOrigin()
+				.AllowAnyMethod()
+				.AllowAnyHeader()
+				.AllowCredentials());
+
+			app.UseMvc();
 
 			app.UseSwagger();
 			app.UseSwaggerUI(c =>
@@ -58,5 +66,5 @@ namespace ProSMan.Backend
 				c.RoutePrefix = string.Empty;
 			});
 		}
-    }
+	}
 }

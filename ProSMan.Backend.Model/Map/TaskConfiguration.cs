@@ -19,20 +19,17 @@ namespace ProSMan.Backend.Model
 			entity.HasOne(x => x.Project)
 				.WithMany(x => x.Tasks)
 				.HasForeignKey(x => x.ProjectId)
-				.OnDelete(DeleteBehavior.Restrict)
-				.IsRequired();
+				.OnDelete(DeleteBehavior.Restrict);
 
 			entity.HasOne(x => x.Category)
 				.WithMany(x => x.Tasks)
 				.HasForeignKey(x => x.CategoryId)
-				.OnDelete(DeleteBehavior.Restrict)
-				.IsRequired();
+				.OnDelete(DeleteBehavior.Restrict);
 
 			entity.HasOne(x => x.Sprint)
 				.WithMany(x => x.Tasks)
 				.HasForeignKey(x => x.SprintId)
-				.OnDelete(DeleteBehavior.Restrict)
-				.IsRequired();
+				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }

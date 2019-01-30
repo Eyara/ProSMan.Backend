@@ -14,8 +14,8 @@ using System.Threading.Tasks;
 
 namespace ProSMan.Backend.API.Controllers
 {
-    public class TaskController : ApiController
-    {
+	public class TaskController : ApiController
+	{
 		public TaskController(ILoggerFactory loggerFactory,
 			ProSManContext dbContext,
 			IMapper autoMapper
@@ -39,7 +39,7 @@ namespace ProSMan.Backend.API.Controllers
 		}
 
 		[HttpGet("GetById")]
-		public async Task<IActionResult> Get(int id)
+		public async Task<IActionResult> Get(Guid id)
 		{
 			var entities = await _dbContext.Tasks
 				.Where(x => x.Id == id)
@@ -49,10 +49,33 @@ namespace ProSMan.Backend.API.Controllers
 			return Ok(new { data = entities });
 		}
 
+		[HttpGet("GetByProjectId")]
+		public async Task<IActionResult> GetByProjectId(Guid id)
+		{
+			var entities = await _dbContext.Tasks
+				.Where(x => x.ProjectId == id)
+				.ProjectTo<TaskViewModel>(_mapper.ConfigurationProvider)
+				.ToListAsync();
+
+			return Ok(new { data = entities });
+		}
+
+		[HttpGet("GetBySprintId")]
+		public async Task<IActionResult> GetBySprintId(Guid id)
+		{
+			var entities = await _dbContext.Tasks
+				.Where(x => x.SprintId == id)
+				.ProjectTo<TaskViewModel>(_mapper.ConfigurationProvider)
+				.ToListAsync();
+
+			return Ok(new { data = entities });
+		}
+
 		[HttpPost]
 		public async Task<IActionResult> Post([FromBody] TaskViewModel model)
 		{
 			Model.Task task = _mapper.Map<Model.Task>(model);
+			task.Id = Guid.NewGuid();
 
 			Project project = await _dbContext.Projects
 				.Where(x => x.Id == model.ProjectId)
@@ -72,16 +95,36 @@ namespace ProSMan.Backend.API.Controllers
 				task.Project = project;
 				task.Category = category;
 				task.Sprint = sprint;
+				_dbContext.Tasks.Add(task);
+				_dbContext.SaveChanges();
 			}
 
-			await _dbContext.AddAsync(task);
-			_dbContext.SaveChanges();
+			return Ok();
+		}
+
+		[HttpPut]
+		public async Task<IActionResult> UpdateTask([FromBody] TaskViewModel model)
+		{
+			var entity = await _dbContext.Tasks
+				.Where(x => x.Id == model.Id)
+				.SingleOrDefaultAsync();
+
+			if (entity != null)
+			{
+				entity.Name = model.Name;
+				entity.Priority = (Model.Priority)model.Priority;
+				entity.ActualSpentTime = model.ActualSpentTime;
+				entity.Description = model.Description;
+				entity.IsFinished = model.IsFinished;
+				entity.TimeEstimate = model.TimeEstimate;
+				_dbContext.SaveChanges();
+			}
 
 			return Ok();
 		}
 
 		[HttpDelete]
-		public async Task<IActionResult> Delete(int id)
+		public async Task<IActionResult> Delete(Guid id)
 		{
 			var entity = await _dbContext.Tasks
 				.Where(x => x.Id == id)
@@ -89,7 +132,7 @@ namespace ProSMan.Backend.API.Controllers
 
 			if (entity != null)
 			{
-				_dbContext.Remove(entity);
+				_dbContext.Tasks.Remove(entity);
 				_dbContext.SaveChanges();
 			}
 

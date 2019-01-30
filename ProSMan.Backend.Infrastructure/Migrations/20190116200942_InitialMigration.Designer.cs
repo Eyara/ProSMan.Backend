@@ -10,7 +10,7 @@ using ProSMan.Backend.Infrastructure;
 namespace ProSMan.Backend.Infrastructure.Migrations
 {
     [DbContext(typeof(ProSManContext))]
-    [Migration("20190101210445_Initial-Migration")]
+    [Migration("20190116200942_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,13 +23,11 @@ namespace ProSMan.Backend.Infrastructure.Migrations
 
             modelBuilder.Entity("ProSMan.Backend.Model.Category", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<Guid>("Id");
 
                     b.Property<string>("Name");
 
-                    b.Property<int>("ProjectId");
+                    b.Property<Guid>("ProjectId");
 
                     b.HasKey("Id");
 
@@ -40,9 +38,7 @@ namespace ProSMan.Backend.Infrastructure.Migrations
 
             modelBuilder.Entity("ProSMan.Backend.Model.Project", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<Guid>("Id");
 
                     b.Property<string>("Name");
 
@@ -53,9 +49,7 @@ namespace ProSMan.Backend.Infrastructure.Migrations
 
             modelBuilder.Entity("ProSMan.Backend.Model.Sprint", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<Guid>("Id");
 
                     b.Property<DateTime>("FromDate");
 
@@ -63,7 +57,7 @@ namespace ProSMan.Backend.Infrastructure.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<int>("ProjectId");
+                    b.Property<Guid>("ProjectId");
 
                     b.Property<DateTime>("ToDate");
 
@@ -76,13 +70,12 @@ namespace ProSMan.Backend.Infrastructure.Migrations
 
             modelBuilder.Entity("ProSMan.Backend.Model.Task", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("ActualSpentTime");
 
-                    b.Property<int>("CategoryId");
+                    b.Property<Guid?>("CategoryId");
 
                     b.Property<string>("Description");
 
@@ -93,9 +86,9 @@ namespace ProSMan.Backend.Infrastructure.Migrations
                     b.Property<string>("Priority")
                         .IsRequired();
 
-                    b.Property<int>("ProjectId");
+                    b.Property<Guid>("ProjectId");
 
-                    b.Property<int>("SprintId");
+                    b.Property<Guid>("SprintId");
 
                     b.Property<int>("TimeEstimate");
 
@@ -123,7 +116,7 @@ namespace ProSMan.Backend.Infrastructure.Migrations
                     b.HasOne("ProSMan.Backend.Model.Project", "Project")
                         .WithMany("Sprints")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("ProSMan.Backend.Model.Task", b =>

@@ -1,10 +1,12 @@
-﻿namespace ProSMan.Backend.Domain.ViewModels
+﻿using System;
+
+namespace ProSMan.Backend.Domain.ViewModels
 {
     public class CategoryViewModel
     {
-		public int Id { get; set; }
+		public Guid Id { get; set; }
 		public string Name { get; set; }
 
-		public int ProjectId { get; set; }
+		public Guid? ProjectId { get; set; }
 	}
 }

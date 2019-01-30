@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ProSMan.Backend.Infrastructure.Migrations
@@ -12,8 +11,7 @@ namespace ProSMan.Backend.Infrastructure.Migrations
                 name: "Projects",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -25,10 +23,9 @@ namespace ProSMan.Backend.Infrastructure.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(nullable: true),
-                    ProjectId = table.Column<int>(nullable: false)
+                    ProjectId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -45,13 +42,12 @@ namespace ProSMan.Backend.Infrastructure.Migrations
                 name: "Sprints",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     FromDate = table.Column<DateTime>(nullable: false),
                     ToDate = table.Column<DateTime>(nullable: false),
                     IsFinished = table.Column<bool>(nullable: false),
-                    ProjectId = table.Column<int>(nullable: false)
+                    ProjectId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -61,24 +57,23 @@ namespace ProSMan.Backend.Infrastructure.Migrations
                         column: x => x.ProjectId,
                         principalTable: "Projects",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Tasks",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     TimeEstimate = table.Column<int>(nullable: false),
                     ActualSpentTime = table.Column<int>(nullable: false),
                     Priority = table.Column<string>(nullable: false),
                     IsFinished = table.Column<bool>(nullable: false),
-                    ProjectId = table.Column<int>(nullable: false),
-                    CategoryId = table.Column<int>(nullable: false),
-                    SprintId = table.Column<int>(nullable: false)
+                    ProjectId = table.Column<Guid>(nullable: false),
+                    CategoryId = table.Column<Guid>(nullable: true),
+                    SprintId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {

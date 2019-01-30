@@ -5,9 +5,14 @@ using System.Text;
 
 namespace ProSMan.Backend.Model
 {
-    public class Project: IEntityBase<int>
+	public class Project : IEntityBase<Guid>
 	{
-		public int Id { get; set; }
+		public Project()
+		{
+			Id = Guid.NewGuid();
+		}
+
+		public Guid Id { get; set; }
 		public string Name { get; set; }
 
 		public virtual ICollection<Category> Categories { get; set; }

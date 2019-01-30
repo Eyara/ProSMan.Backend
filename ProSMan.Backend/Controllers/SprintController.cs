@@ -14,8 +14,8 @@ using System.Threading.Tasks;
 
 namespace ProSMan.Backend.API.Controllers
 {
-    public class SprintController : ApiController
-    {
+	public class SprintController : ApiController
+	{
 		public SprintController(ILoggerFactory loggerFactory,
 			ProSManContext dbContext,
 			IMapper autoMapper
@@ -39,7 +39,7 @@ namespace ProSMan.Backend.API.Controllers
 		}
 
 		[HttpGet("GetById")]
-		public async Task<IActionResult> Get(int id)
+		public async Task<IActionResult> Get(Guid id)
 		{
 			var entities = await _dbContext.Sprints
 				.Where(x => x.Id == id)
@@ -49,10 +49,23 @@ namespace ProSMan.Backend.API.Controllers
 			return Ok(new { data = entities });
 		}
 
+		[HttpGet("GetByProjectId")]
+		public async Task<IActionResult> GetByProjectId(Guid id)
+		{
+			var entities = await _dbContext.Sprints
+				.Where(x => x.ProjectId == id)
+				.ProjectTo<SprintViewModel>(_mapper.ConfigurationProvider)
+				.ToListAsync();
+
+			return Ok(new { data = entities });
+		}
+
 		[HttpPost]
 		public async Task<IActionResult> Post([FromBody] SprintViewModel model)
 		{
 			Sprint sprint = _mapper.Map<Sprint>(model);
+			sprint.Id = Guid.NewGuid();
+
 			Project project = await _dbContext.Projects
 				.Where(x => x.Id == model.ProjectId)
 				.SingleOrDefaultAsync();
@@ -60,16 +73,35 @@ namespace ProSMan.Backend.API.Controllers
 			if (project != null)
 			{
 				sprint.Project = project;
+				_dbContext.Sprints.Add(sprint);
+				_dbContext.SaveChanges();
 			}
 
-			await _dbContext.AddAsync(sprint);
-			_dbContext.SaveChanges();
+
+			return Ok();
+		}
+
+		[HttpPut]
+		public async Task<IActionResult> UpdateSprint([FromBody] SprintViewModel model)
+		{
+			var entity = await _dbContext.Sprints
+				.Where(x => x.Id == model.Id)
+				.SingleOrDefaultAsync();
+
+			if (entity != null)
+			{
+				entity.Name = model.Name;
+				entity.IsFinished = model.IsFinished;
+				entity.FromDate = model.FromDate;
+				entity.ToDate = model.ToDate;
+				_dbContext.SaveChanges();
+			}
 
 			return Ok();
 		}
 
 		[HttpDelete]
-		public async Task<IActionResult> Delete(int id)
+		public async Task<IActionResult> Delete(Guid id)
 		{
 			var entity = await _dbContext.Sprints
 				.Where(x => x.Id == id)
@@ -77,7 +109,7 @@ namespace ProSMan.Backend.API.Controllers
 
 			if (entity != null)
 			{
-				_dbContext.Remove(entity);
+				_dbContext.Sprints.Remove(entity);
 				_dbContext.SaveChanges();
 			}
 
