@@ -123,6 +123,23 @@ namespace ProSMan.Backend.API.Controllers
 			return Ok();
 		}
 
+		[HttpPost("ToggleFinishTask")]
+		public async Task<IActionResult> ToggleFinishTask(Guid id)
+		{
+			var entity = await _dbContext.Tasks
+				.Where(x => x.Id == id)
+				.SingleOrDefaultAsync();
+
+			if (entity != null)
+			{
+				entity.IsFinished = !entity.IsFinished;
+				_dbContext.Update(entity);
+				await _dbContext.SaveChangesAsync();
+			}
+
+			return Ok();
+		}
+
 		[HttpDelete]
 		public async Task<IActionResult> Delete(Guid id)
 		{
