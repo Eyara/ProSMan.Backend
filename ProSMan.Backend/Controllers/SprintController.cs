@@ -38,22 +38,11 @@ namespace ProSMan.Backend.API.Controllers
 			return Ok(new { data = entities });
 		}
 
-		[HttpGet("GetById")]
-		public async Task<IActionResult> Get(Guid id)
-		{
-			var entities = await _dbContext.Sprints
-				.Where(x => x.Id == id)
-				.ProjectTo<SprintViewModel>(_mapper.ConfigurationProvider)
-				.SingleOrDefaultAsync();
-
-			return Ok(new { data = entities });
-		}
-
 		[HttpGet("GetByProjectId")]
 		public async Task<IActionResult> GetByProjectId(Guid id)
 		{
 			var entities = await _dbContext.Sprints
-				.Where(x => x.ProjectId == id)
+				.Where(x => x.ProjectId == id && !x.IsDeleted)
 				.ProjectTo<SprintViewModel>(_mapper.ConfigurationProvider)
 				.ToListAsync();
 
@@ -109,7 +98,8 @@ namespace ProSMan.Backend.API.Controllers
 
 			if (entity != null)
 			{
-				_dbContext.Sprints.Remove(entity);
+				entity.IsDeleted = true;
+				_dbContext.Update(entity);
 				_dbContext.SaveChanges();
 			}
 

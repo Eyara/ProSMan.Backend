@@ -32,19 +32,9 @@ namespace ProSMan.Backend.API.Controllers
 		public async Task<IActionResult> GetAll()
 		{
 			var entities = await _dbContext.Categories
+				.Where(x => !x.IsDeleted)
 				.ProjectTo<CategoryViewModel>(_mapper.ConfigurationProvider)
 				.ToListAsync();
-
-			return Ok(new { data = entities });
-		}
-
-		[HttpGet("GetById")]
-		public async Task<IActionResult> Get(Guid id)
-		{
-			var entities = await _dbContext.Categories
-				.Where(x => x.Id == id)
-				.ProjectTo<CategoryViewModel>(_mapper.ConfigurationProvider)
-				.SingleOrDefaultAsync();
 
 			return Ok(new { data = entities });
 		}
@@ -53,7 +43,7 @@ namespace ProSMan.Backend.API.Controllers
 		public async Task<IActionResult> GetByProjectId(Guid id)
 		{
 			var entities = await _dbContext.Categories
-				.Where(x => x.ProjectId == id)
+				.Where(x => x.ProjectId == id && !x.IsDeleted)
 				.ProjectTo<CategoryViewModel>(_mapper.ConfigurationProvider)
 				.ToListAsync();
 
@@ -105,7 +95,8 @@ namespace ProSMan.Backend.API.Controllers
 
 			if (entity != null)
 			{
-				_dbContext.Categories.Remove(entity);
+				entity.IsDeleted = true;
+				_dbContext.Update(entity);
 				_dbContext.SaveChanges();
 			}
 

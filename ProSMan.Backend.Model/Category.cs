@@ -13,6 +13,7 @@ namespace ProSMan.Backend.Model
 		}
 		public Guid Id { get; set; }
 		public string Name { get; set; }
+		public Boolean IsDeleted { get; set; }
 
 		public Guid ProjectId { get; set; }
 

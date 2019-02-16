@@ -16,6 +16,7 @@ namespace ProSMan.Backend.Model
 		public DateTime FromDate { get; set; }
 		public DateTime ToDate { get; set; }
 		public Boolean IsFinished { get; set; }
+		public Boolean IsDeleted { get; set; }
 
 		public Guid ProjectId { get; set; }
 

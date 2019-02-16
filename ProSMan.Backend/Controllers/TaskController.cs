@@ -37,34 +37,12 @@ namespace ProSMan.Backend.API.Controllers
 
 			return Ok(new { data = entities });
 		}
-
-		[HttpGet("GetById")]
-		public async Task<IActionResult> Get(Guid id)
-		{
-			var entities = await _dbContext.Tasks
-				.Where(x => x.Id == id)
-				.ProjectTo<TaskViewModel>(_mapper.ConfigurationProvider)
-				.SingleOrDefaultAsync();
-
-			return Ok(new { data = entities });
-		}
-
-		[HttpGet("GetByProjectId")]
-		public async Task<IActionResult> GetByProjectId(Guid id)
-		{
-			var entities = await _dbContext.Tasks
-				.Where(x => x.ProjectId == id)
-				.ProjectTo<TaskViewModel>(_mapper.ConfigurationProvider)
-				.ToListAsync();
-
-			return Ok(new { data = entities });
-		}
-
+		
 		[HttpGet("GetBySprintId")]
 		public async Task<IActionResult> GetBySprintId(Guid id)
 		{
 			var entities = await _dbContext.Tasks
-				.Where(x => x.SprintId == id)
+				.Where(x => x.SprintId == id && !x.Sprint.IsDeleted && !x.Category.IsDeleted)
 				.ProjectTo<TaskViewModel>(_mapper.ConfigurationProvider)
 				.ToListAsync();
 
