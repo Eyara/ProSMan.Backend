@@ -37,6 +37,17 @@ namespace ProSMan.Backend.Controllers
 			return Ok(new { data = entities });
 		}
 
+		[HttpGet("GetById")]
+		public async Task<IActionResult> GetById(Guid id)
+		{
+			var entities = await _dbContext.Projects
+				.Where(x => !x.IsDeleted && x.Id == id)
+				.ProjectTo<ProjectViewModel>(_mapper.ConfigurationProvider)
+				.ToListAsync();
+
+			return Ok(new { data = entities });
+		}
+
 		[HttpGet("GetAllWithDeleted")]
 		public async Task<IActionResult> GetAllWithDeleted()
 		{
