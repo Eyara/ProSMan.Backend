@@ -37,12 +37,15 @@ namespace ProSMan.Backend.API.Controllers
 
 			return Ok(new { data = entities });
 		}
-		
+
 		[HttpGet("GetBySprintId")]
 		public async Task<IActionResult> GetBySprintId(Guid id)
 		{
 			var entities = await _dbContext.Tasks
 				.Where(x => x.SprintId == id && !x.Sprint.IsDeleted && !x.Category.IsDeleted)
+				.OrderBy(x => x.IsFinished)
+				.ThenByDescending(x => x.Priority)
+				.ThenBy(x => x.Name)
 				.ProjectTo<TaskViewModel>(_mapper.ConfigurationProvider)
 				.ToListAsync();
 
