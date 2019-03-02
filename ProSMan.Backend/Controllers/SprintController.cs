@@ -38,6 +38,17 @@ namespace ProSMan.Backend.API.Controllers
 			return Ok(new { data = entities });
 		}
 
+		[HttpGet("GetById")]
+		public async Task<IActionResult> GetById(Guid id)
+		{
+			var entities = await _dbContext.Sprints
+				.Where(x => !x.IsDeleted && x.Id == id)
+				.ProjectTo<SprintViewModel>(_mapper.ConfigurationProvider)
+				.ToListAsync();
+
+			return Ok(new { data = entities });
+		}
+
 		[HttpGet("GetByProjectId")]
 		public async Task<IActionResult> GetByProjectId(Guid id)
 		{
