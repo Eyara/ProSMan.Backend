@@ -9,6 +9,9 @@ using ProSMan.Backend.Infrastructure;
 using ProSMan.Backend.Domain.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using ProSMan.Backend.Model;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ProSMan.Backend.Controllers
 {
@@ -16,21 +19,33 @@ namespace ProSMan.Backend.Controllers
     {
 		public ProjectController(ILoggerFactory loggerFactory,
 			ProSManContext dbContext,
-			IMapper autoMapper
-			): base(loggerFactory)
+			IMapper autoMapper,
+			UserManager<User> userManager
+			) : base(loggerFactory)
 		{
 			_dbContext = dbContext;
 			_mapper = autoMapper;
+			_userManager = userManager;
 		}
 
-		public ProSManContext _dbContext { get; set; }
+		private ProSManContext _dbContext;
+		private UserManager<User> _userManager;
 		private readonly IMapper _mapper;
 
 		[HttpGet]
 		public async Task<IActionResult> GetAll()
 		{
+			var userName = User.Claims.Where(x => x.Type == "name").FirstOrDefault()?.Value;
+
+
+			if (userName == null)
+			{
+				return Unauthorized();
+			}
+
+
 			var entities = await _dbContext.Projects
-				.Where(x => !x.IsDeleted)
+				.Where(x => !x.IsDeleted && x.User.UserName == userName)
 				.ProjectTo<ProjectViewModel>(_mapper.ConfigurationProvider)
 				.ToListAsync();
 
@@ -51,7 +66,10 @@ namespace ProSMan.Backend.Controllers
 		[HttpGet("GetAllWithDeleted")]
 		public async Task<IActionResult> GetAllWithDeleted()
 		{
+			var user = await _userManager.GetUserAsync(User);
+
 			var entities = await _dbContext.Projects
+				.Where(x => x.UserId == user.Id)
 				.ProjectTo<ProjectViewModel>(_mapper.ConfigurationProvider)
 				.SingleOrDefaultAsync();
 
@@ -61,8 +79,12 @@ namespace ProSMan.Backend.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Post([FromBody] ProjectViewModel model)
 		{
+			var user = await _userManager.GetUserAsync(User);
+
 			Project project = _mapper.Map<Project>(model);
 			project.Id = Guid.NewGuid();
+			project.User = user;
+
 			await _dbContext.AddAsync(project);
 			_dbContext.SaveChanges();
 

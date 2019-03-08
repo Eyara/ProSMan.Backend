@@ -24,6 +24,9 @@ namespace ProSMan.Backend.Model
 
 			entity.HasMany(x => x.Tasks)
 				.WithOne(y => y.Project);
+
+			entity.HasOne(x => x.User)
+				.WithMany(y => y.Projects);
 		}
 	}
 }
