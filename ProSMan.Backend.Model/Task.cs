@@ -16,6 +16,7 @@ namespace ProSMan.Backend.Model
 		public int ActualSpentTime { get; set; }
 		public Priority Priority { get; set; }
 		public bool IsFinished { get; set; }
+		public DateTime? Date { get; set; }
 
 		public Guid ProjectId { get; set; }
 		public Guid? CategoryId { get; set; }

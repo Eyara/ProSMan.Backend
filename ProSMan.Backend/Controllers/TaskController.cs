@@ -52,6 +52,30 @@ namespace ProSMan.Backend.API.Controllers
 			return Ok(new { data = entities });
 		}
 
+		[HttpGet("getTodayTasks")]
+		public async Task<IActionResult> GetTodayTasks()
+		{
+			var userName = User.Claims.Where(x => x.Type == "name").FirstOrDefault()?.Value;
+
+
+			if (userName == null)
+			{
+				return Unauthorized();
+			}
+
+			var entities = await _dbContext.Tasks
+				.Where(x => (x.Date ?? DateTime.MinValue).Date == DateTime.Today.Date &&
+					x.Project.User.UserName == userName &&
+					!x.Sprint.IsDeleted && !x.Category.IsDeleted)
+				.OrderBy(x => x.IsFinished)
+				.ThenByDescending(x => x.Priority)
+				.ThenBy(x => x.Name)
+				.ProjectTo<TaskViewModel>(_mapper.ConfigurationProvider)
+				.ToListAsync();
+
+			return Ok(new { data = entities });
+		}
+
 		[HttpPost]
 		public async Task<IActionResult> Post([FromBody] TaskViewModel model)
 		{
@@ -114,6 +138,23 @@ namespace ProSMan.Backend.API.Controllers
 			if (entity != null)
 			{
 				entity.IsFinished = !entity.IsFinished;
+				_dbContext.Update(entity);
+				await _dbContext.SaveChangesAsync();
+			}
+
+			return Ok();
+		}
+
+		[HttpPost("ToggleTodayTask")]
+		public async Task<IActionResult> ToggleTodayTask(Guid id)
+		{
+			var entity = await _dbContext.Tasks
+				.Where(x => x.Id == id)
+				.SingleOrDefaultAsync();
+
+			if (entity != null)
+			{
+				entity.Date = !entity.Date.HasValue ? DateTime.Today : (DateTime?)null;
 				_dbContext.Update(entity);
 				await _dbContext.SaveChangesAsync();
 			}

@@ -9,6 +9,7 @@ namespace ProSMan.Backend.Domain.ViewModels
 		public Guid Id { get; set; }
 		public string Name { get; set; }
 		public string Description { get; set; }
+		public DateTime Date { get; set; }
 		public int TimeEstimate { get; set; }
 		public int ActualSpentTime { get; set; }
 		public Priority Priority { get; set; }
