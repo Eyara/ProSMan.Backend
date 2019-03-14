@@ -1,12 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ProSMan.Backend.Core.Extensions;
 using ProSMan.Backend.Model;
 using System;
 
 namespace ProSMan.Backend.Infrastructure
 {
-    public class ProSManContext: DbContext
-    {
+    public class ProSManContext: IdentityDbContext<User>
+	{
 		public ProSManContext(DbContextOptions<ProSManContext> options)
 			: base(options)
 		{ }
@@ -23,6 +25,10 @@ namespace ProSMan.Backend.Infrastructure
 			builder.AddConfiguration(new CategoryConfiguration());
 			builder.AddConfiguration(new SprintConfiguration());
 			builder.AddConfiguration(new TaskConfiguration());
+
+			builder.Entity<IdentityUserRole<Guid>>().HasKey(p => new { p.UserId, p.RoleId });
+			builder.Entity<Role>().ToTable("AspNetRoles");
+			builder.Entity<User>().ToTable("AspNetUsers");
 		}
 	}
 }

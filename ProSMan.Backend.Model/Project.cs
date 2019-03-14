@@ -16,6 +16,10 @@ namespace ProSMan.Backend.Model
 		public string Name { get; set; }
 		public Boolean IsDeleted { get; set; }
 
+		public string UserId { get; set; }
+
+		public virtual User User { get; set; }
+
 		public virtual ICollection<Category> Categories { get; set; }
 		public virtual ICollection<Sprint> Sprints { get; set; }
 		public virtual ICollection<Task> Tasks { get; set; }

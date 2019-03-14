@@ -7,6 +7,9 @@
   <ItemGroup>
     <Compile Remove="Migrations\20190113174710_InitialMigration.cs" />
     <Compile Remove="Migrations\20190116190409_InitialMigration.cs" />
+    <Compile Remove="Migrations\20190302171454_AddedUserIdFieldToProjectTable.cs" />
+    <Compile Remove="Migrations\20190302174609_AddedUserIdFieldToProjectTable.cs" />
+    <Compile Remove="Migrations\20190308212605_AddDateFieldToTasks.cs" />
   </ItemGroup>
 
   <ItemGroup>

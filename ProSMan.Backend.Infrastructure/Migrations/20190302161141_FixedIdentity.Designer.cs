@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProSMan.Backend.Infrastructure;
 
 namespace ProSMan.Backend.Infrastructure.Migrations
 {
     [DbContext(typeof(ProSManContext))]
-    partial class ProSManContextModelSnapshot : ModelSnapshot
+    [Migration("20190302161141_FixedIdentity")]
+    partial class FixedIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -145,157 +147,6 @@ namespace ProSMan.Backend.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictApplication", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("ClientId")
-                        .IsRequired()
-                        .HasMaxLength(100);
-
-                    b.Property<string>("ClientSecret");
-
-                    b.Property<string>("ConcurrencyToken")
-                        .IsConcurrencyToken()
-                        .HasMaxLength(50);
-
-                    b.Property<string>("ConsentType");
-
-                    b.Property<string>("DisplayName");
-
-                    b.Property<string>("Permissions");
-
-                    b.Property<string>("PostLogoutRedirectUris");
-
-                    b.Property<string>("Properties");
-
-                    b.Property<string>("RedirectUris");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(25);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClientId")
-                        .IsUnique();
-
-                    b.ToTable("OpenIddictApplications");
-                });
-
-            modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictAuthorization", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("ApplicationId");
-
-                    b.Property<string>("ConcurrencyToken")
-                        .IsConcurrencyToken()
-                        .HasMaxLength(50);
-
-                    b.Property<string>("Properties");
-
-                    b.Property<string>("Scopes");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(25);
-
-                    b.Property<string>("Subject")
-                        .IsRequired()
-                        .HasMaxLength(450);
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(25);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationId", "Status", "Subject", "Type");
-
-                    b.ToTable("OpenIddictAuthorizations");
-                });
-
-            modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictScope", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("ConcurrencyToken")
-                        .IsConcurrencyToken()
-                        .HasMaxLength(50);
-
-                    b.Property<string>("Description");
-
-                    b.Property<string>("DisplayName");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200);
-
-                    b.Property<string>("Properties");
-
-                    b.Property<string>("Resources");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("OpenIddictScopes");
-                });
-
-            modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictToken", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("ApplicationId");
-
-                    b.Property<string>("AuthorizationId");
-
-                    b.Property<string>("ConcurrencyToken")
-                        .IsConcurrencyToken()
-                        .HasMaxLength(50);
-
-                    b.Property<DateTimeOffset?>("CreationDate");
-
-                    b.Property<DateTimeOffset?>("ExpirationDate");
-
-                    b.Property<string>("Payload");
-
-                    b.Property<string>("Properties");
-
-                    b.Property<string>("ReferenceId")
-                        .HasMaxLength(100);
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(25);
-
-                    b.Property<string>("Subject")
-                        .IsRequired()
-                        .HasMaxLength(450);
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(25);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuthorizationId");
-
-                    b.HasIndex("ReferenceId")
-                        .IsUnique()
-                        .HasFilter("[ReferenceId] IS NOT NULL");
-
-                    b.HasIndex("ApplicationId", "Status", "Subject", "Type");
-
-                    b.ToTable("OpenIddictTokens");
-                });
-
             modelBuilder.Entity("ProSMan.Backend.Model.Category", b =>
                 {
                     b.Property<Guid>("Id");
@@ -321,11 +172,7 @@ namespace ProSMan.Backend.Infrastructure.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<string>("UserId");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Projects");
                 });
@@ -361,8 +208,6 @@ namespace ProSMan.Backend.Infrastructure.Migrations
                     b.Property<int>("ActualSpentTime");
 
                     b.Property<Guid?>("CategoryId");
-
-                    b.Property<DateTime?>("Date");
 
                     b.Property<string>("Description");
 
@@ -497,37 +342,12 @@ namespace ProSMan.Backend.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictAuthorization", b =>
-                {
-                    b.HasOne("OpenIddict.EntityFrameworkCore.Models.OpenIddictApplication", "Application")
-                        .WithMany("Authorizations")
-                        .HasForeignKey("ApplicationId");
-                });
-
-            modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictToken", b =>
-                {
-                    b.HasOne("OpenIddict.EntityFrameworkCore.Models.OpenIddictApplication", "Application")
-                        .WithMany("Tokens")
-                        .HasForeignKey("ApplicationId");
-
-                    b.HasOne("OpenIddict.EntityFrameworkCore.Models.OpenIddictAuthorization", "Authorization")
-                        .WithMany("Tokens")
-                        .HasForeignKey("AuthorizationId");
-                });
-
             modelBuilder.Entity("ProSMan.Backend.Model.Category", b =>
                 {
                     b.HasOne("ProSMan.Backend.Model.Project", "Project")
                         .WithMany("Categories")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("ProSMan.Backend.Model.Project", b =>
-                {
-                    b.HasOne("ProSMan.Backend.Model.User", "User")
-                        .WithMany("Projects")
-                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("ProSMan.Backend.Model.Sprint", b =>
