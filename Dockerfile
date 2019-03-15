@@ -1,16 +1,25 @@
-FROM microsoft/dotnet:sdk AS build-env
+FROM microsoft/dotnet:2.1-aspnetcore-runtime AS base
 WORKDIR /app
+EXPOSE 80
 
-# Copy csproj and restore as distinct layers
-COPY *.csproj ./
-RUN dotnet restore
+FROM microsoft/dotnet:2.1-sdk AS build
+WORKDIR /src
+COPY ProSMan.Backend.sln ./
+COPY ProSMan.Backend/ProSMan.Backend.API.csproj ProSMan.Backend/
+COPY ProSMan.Backend.Core/ProSMan.Backend.Core.csproj ProSMan.Backend.Core/
+COPY ProSMan.Backend.Domain/ProSMan.Backend.Domain.csproj ProSMan.Backend.Domain/
+COPY ProSMan.Backend.Infrastructure/ProSMan.Backend.Infrastructure.csproj ProSMan.Backend.Infrastructure/
+COPY ProSMan.Backend.Model/ProSMan.Backend.Model.csproj ProSMan.Backend.Model/
 
-# Copy everything else and build
-COPY . ./
-RUN dotnet publish -c Release -o out
+RUN dotnet restore -nowarn:msb3202,nu1503
+COPY . .
+WORKDIR /src
+RUN dotnet build -c Release -o /app
 
-# Build runtime image
-FROM microsoft/dotnet:aspnetcore-runtime
+FROM build AS publish
+RUN dotnet publish -c Release -o /app
+
+FROM base AS final
 WORKDIR /app
-COPY --from=build-env /app/out .
-ENTRYPOINT ["dotnet", "ProSMan.Backend.dll"]
+COPY --from=publish /app .
+ENTRYPOINT ["dotnet", ProSMan.API.dll"]
