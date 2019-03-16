@@ -79,11 +79,19 @@ namespace ProSMan.Backend.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Post([FromBody] ProjectViewModel model)
 		{
-			var user = await _userManager.GetUserAsync(User);
+			var userName = User.Claims.Where(x => x.Type == "name").FirstOrDefault()?.Value;
+
+			if (userName == null)
+			{
+				return Unauthorized();
+			}
+
+			var user = await _userManager.FindByNameAsync(userName);
 
 			Project project = _mapper.Map<Project>(model);
 			project.Id = Guid.NewGuid();
 			project.User = user;
+			project.UserId = user.Id;
 
 			await _dbContext.AddAsync(project);
 			_dbContext.SaveChanges();

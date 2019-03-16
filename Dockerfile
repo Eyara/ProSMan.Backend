@@ -1,8 +1,8 @@
-FROM microsoft/dotnet:2.1-aspnetcore-runtime AS base
+FROM microsoft/dotnet:2.2-aspnetcore-runtime AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM microsoft/dotnet:2.1-sdk AS build
+FROM microsoft/dotnet:2.2-sdk AS build
 WORKDIR /src
 COPY ProSMan.Backend.sln ./
 COPY ProSMan.Backend/ProSMan.Backend.API.csproj ProSMan.Backend/
@@ -22,4 +22,4 @@ RUN dotnet publish -c Release -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", ProSMan.API.dll"]
+ENTRYPOINT ["dotnet", "ProSMan.Backend.API.dll"]
