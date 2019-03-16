@@ -84,6 +84,7 @@ namespace ProSMan.Backend.Controllers
 			Project project = _mapper.Map<Project>(model);
 			project.Id = Guid.NewGuid();
 			project.User = user;
+			project.UserId = user.Id;
 
 			await _dbContext.AddAsync(project);
 			_dbContext.SaveChanges();
