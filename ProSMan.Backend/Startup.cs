@@ -93,6 +93,7 @@ namespace ProSMan.Backend
 					options.UseRollingTokens();
 					options.EnableTokenEndpoint("/api/authorization/token");
 					options.AddSigningKey(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"])));
+					options.SetAccessTokenLifetime(TimeSpan.FromDays(1));
 					options.SetRefreshTokenLifetime(TimeSpan.FromDays(1));
 					options.AcceptAnonymousClients();
 					options.DisableScopeValidation();

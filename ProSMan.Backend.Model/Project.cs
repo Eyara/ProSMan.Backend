@@ -23,5 +23,6 @@ namespace ProSMan.Backend.Model
 		public virtual ICollection<Category> Categories { get; set; }
 		public virtual ICollection<Sprint> Sprints { get; set; }
 		public virtual ICollection<Task> Tasks { get; set; }
+		public virtual ICollection<NonSprintTask> NonSprintTasks { get; set; }
 	}
 }
