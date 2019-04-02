@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProSMan.Backend.Infrastructure;
 
 namespace ProSMan.Backend.Infrastructure.Migrations
 {
     [DbContext(typeof(ProSManContext))]
-    partial class ProSManContextModelSnapshot : ModelSnapshot
+    [Migration("20190327191230_AddedNonSprintTasks")]
+    partial class AddedNonSprintTasks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -338,7 +340,7 @@ namespace ProSMan.Backend.Infrastructure.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("NonSprintTasks");
+                    b.ToTable("NonSprintTask");
                 });
 
             modelBuilder.Entity("ProSMan.Backend.Model.Project", b =>
