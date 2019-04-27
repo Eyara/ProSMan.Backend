@@ -100,6 +100,35 @@ namespace ProSMan.Backend.API.Controllers
 			return Ok();
 		}
 
+		[HttpPut("Finish")]
+		public async Task<IActionResult> Finish(Guid id)
+		{
+			var sprint = await _dbContext.Sprints.FirstOrDefaultAsync(x => x.Id == id);
+			
+			if (sprint == null)
+			{
+				return BadRequest();
+			}
+
+			sprint.IsFinished = true;
+
+			var nonFinishedTasks = await _dbContext.Tasks
+				.Where(x => x.SprintId == id && !x.IsFinished)
+				.ToListAsync();
+
+			var nonSprintTasks = _mapper
+				.Map<List<NonSprintTask>>(nonFinishedTasks);
+
+			nonSprintTasks.ForEach(x => x.IsBacklog = true);
+
+			_dbContext.Sprints.Update(sprint);
+			_dbContext.NonSprintTasks.AddRange(nonSprintTasks);
+			_dbContext.Tasks.RemoveRange(nonFinishedTasks);
+			_dbContext.SaveChanges();
+
+			return Ok();
+		}
+
 		[HttpDelete]
 		public async Task<IActionResult> Delete(Guid id)
 		{

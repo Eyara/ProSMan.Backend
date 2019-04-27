@@ -1,4 +1,5 @@
 ﻿using ProSMan.Backend.Core;
+using ProSMan.Backend.Core.Enums;
 using System;
 
 namespace ProSMan.Backend.Model
@@ -15,6 +16,7 @@ namespace ProSMan.Backend.Model
 		public int TimeEstimate { get; set; }
 		public int ActualSpentTime { get; set; }
 		public Priority Priority { get; set; }
+		public DateTime? FinishedOn { get; set; }
 		public bool IsFinished { get; set; }
 		public DateTime? Date { get; set; }
 
@@ -26,12 +28,5 @@ namespace ProSMan.Backend.Model
 		public virtual Category Category { get; set; }
 		public virtual Sprint Sprint { get; set; }
 
-	}
-
-	public enum Priority : int
-	{
-		Low = 1,
-		Medium,
-		High
 	}
 }

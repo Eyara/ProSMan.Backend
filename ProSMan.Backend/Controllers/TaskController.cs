@@ -68,7 +68,7 @@ namespace ProSMan.Backend.API.Controllers
 					x.Project.User.UserName == userName &&
 					!x.Sprint.IsDeleted && !x.Category.IsDeleted)
 				.OrderBy(x => x.IsFinished)
-				.ThenByDescending(x => x.Priority)
+				.ThenByDescending(x => (int)x.Priority)
 				.ThenBy(x => x.Name)
 				.ProjectTo<TaskViewModel>(_mapper.ConfigurationProvider)
 				.ToListAsync();
@@ -82,27 +82,8 @@ namespace ProSMan.Backend.API.Controllers
 			Model.Task task = _mapper.Map<Model.Task>(model);
 			task.Id = Guid.NewGuid();
 
-			Project project = await _dbContext.Projects
-				.Where(x => x.Id == model.ProjectId)
-				.SingleOrDefaultAsync();
-
-			Category category = await _dbContext.Categories
-				.Where(x => x.Id == model.CategoryId)
-				.SingleOrDefaultAsync();
-
-			Sprint sprint = await _dbContext.Sprints
-				.Where(x => x.Id == model.SprintId)
-				.SingleOrDefaultAsync();
-
-
-			if (project != null && category != null && sprint != null)
-			{
-				task.Project = project;
-				task.Category = category;
-				task.Sprint = sprint;
-				_dbContext.Tasks.Add(task);
-				_dbContext.SaveChanges();
-			}
+			_dbContext.Tasks.Add(task);
+			_dbContext.SaveChanges();
 
 			return Ok();
 		}
@@ -112,16 +93,13 @@ namespace ProSMan.Backend.API.Controllers
 		{
 			var entity = await _dbContext.Tasks
 				.Where(x => x.Id == model.Id)
+				.ProjectTo<TaskViewModel>(_mapper.ConfigurationProvider)
 				.SingleOrDefaultAsync();
 
 			if (entity != null)
 			{
-				entity.Name = model.Name;
-				entity.Priority = (Model.Priority)model.Priority;
-				entity.ActualSpentTime = model.ActualSpentTime;
-				entity.Description = model.Description;
-				entity.IsFinished = model.IsFinished;
-				entity.TimeEstimate = model.TimeEstimate;
+				var task = _mapper.Map<Model.Task>(model);
+				_dbContext.Tasks.Update(task);
 				_dbContext.SaveChanges();
 			}
 

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProSMan.Backend.Infrastructure;
 
 namespace ProSMan.Backend.Infrastructure.Migrations
 {
     [DbContext(typeof(ProSManContext))]
-    partial class ProSManContextModelSnapshot : ModelSnapshot
+    [Migration("20190416215442_AddedFinishedOnToTasks")]
+    partial class AddedFinishedOnToTasks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -402,7 +404,8 @@ namespace ProSMan.Backend.Infrastructure.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<int>("Priority");
+                    b.Property<string>("Priority")
+                        .IsRequired();
 
                     b.Property<Guid>("ProjectId");
 

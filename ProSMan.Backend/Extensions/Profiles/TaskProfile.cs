@@ -9,17 +9,19 @@ namespace ProSMan.Backend.API.Profiles
 		public TaskProfile()
 		{
 			CreateMap<Task, TaskViewModel>()
-				.ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
-				.ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
-				.ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description))
-				.ForMember(dest => dest.ActualSpentTime, opts => opts.MapFrom(src => src.ActualSpentTime))
-				.ForMember(dest => dest.TimeEstimate, opts => opts.MapFrom(src => src.TimeEstimate))
-				.ForMember(dest => dest.Priority, opts => opts.MapFrom(src => (ProSMan.Backend.Domain.ViewModels.Priority) src.Priority))
-				.ForMember(dest => dest.IsFinished, opts => opts.MapFrom(src => src.IsFinished))
 				.ForMember(dest => dest.ProjectId, opts => opts.MapFrom(src => src.Project.Id))
 				.ForMember(dest => dest.CategoryId, opts => opts.MapFrom(src => src.Category.Id))
-				.ForMember(dest => dest.SprintId, opts => opts.MapFrom(src => src.Sprint.Id))
-				.ReverseMap();
+				.ForMember(dest => dest.SprintId, opts => opts.MapFrom(src => src.Sprint.Id));
+
+			CreateMap<TaskViewModel, Task>()
+				.ForMember(dest => dest.Project, opts => opts.Ignore())
+				.ForMember(dest => dest.Category, opts => opts.Ignore())
+				.ForMember(dest => dest.Sprint, opts => opts.Ignore())
+				.ForMember(dest => dest.FinishedOn, opts => opts.Ignore());
+
+			CreateMap<Task, NonSprintTask>()
+				.ForMember(dest => dest.Project, opts => opts.Ignore())
+				.ForMember(dest => dest.IsBacklog, opts => opts.Ignore());
 		}
 	}
 }

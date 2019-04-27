@@ -16,7 +16,6 @@ using ProSMan.Backend.API.Profiles;
 using ProSMan.Backend.Infrastructure;
 using ProSMan.Backend.Model;
 using Swashbuckle.AspNetCore.Swagger;
-using System.Threading.Tasks;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
@@ -122,7 +121,7 @@ namespace ProSMan.Backend
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+		public void Configure(IApplicationBuilder app, IHostingEnvironment env, IMapper mapper)
 		{
 			app.UseAuthentication();
 
@@ -131,9 +130,9 @@ namespace ProSMan.Backend
 				app.UseDeveloperExceptionPage();
 			}
 
+			mapper.ConfigurationProvider.AssertConfigurationIsValid();
+
 			app.UseCors("MyPolicy");
-
-
 			app.UseMvc();
 
 			app.UseSwagger();
