@@ -29,17 +29,10 @@ namespace ProSMan.Backend.API.Controllers
 		private readonly IMapper _mapper;
 
 		[HttpGet]
-		public async Task<IActionResult> GetNonSprintTasks()
+		public async Task<IActionResult> GetNonSprintTasks(Guid projectId)
 		{
-			var userName = User.Claims.Where(x => x.Type == "name").FirstOrDefault()?.Value;
-
-			if (userName == null)
-			{
-				return Unauthorized();
-			}
-
 			var entities = await _dbContext.NonSprintTasks
-				.Where(x => !x.IsBacklog && x.Project.User.UserName == userName)
+				.Where(x => !x.IsBacklog && x.ProjectId == projectId)
 				.ProjectTo<NonSprintTaskViewModel>(_mapper.ConfigurationProvider)
 				.ToListAsync();
 
@@ -47,17 +40,10 @@ namespace ProSMan.Backend.API.Controllers
 		}
 
 		[HttpGet("getBacklog")]
-		public async Task<IActionResult> GetBacklog()
+		public async Task<IActionResult> GetBacklog(Guid projectId)
 		{
-			var userName = User.Claims.Where(x => x.Type == "name").FirstOrDefault()?.Value;
-
-			if (userName == null)
-			{
-				return Unauthorized();
-			}
-
 			var entities = await _dbContext.NonSprintTasks
-				.Where(x => x.IsBacklog && x.Project.User.UserName == userName)
+				.Where(x => x.IsBacklog && x.ProjectId == projectId)
 				.ProjectTo<NonSprintTaskViewModel>(_mapper.ConfigurationProvider)
 				.ToListAsync();
 
@@ -71,17 +57,21 @@ namespace ProSMan.Backend.API.Controllers
 			Model.NonSprintTask task = _mapper.Map<Model.NonSprintTask>(model);
 			task.Id = Guid.NewGuid();
 
-			Project project = await _dbContext.Projects
-				.Where(x => x.Id == model.ProjectId)
-				.SingleOrDefaultAsync();
+			_dbContext.NonSprintTasks.Add(task);
+			_dbContext.SaveChanges();
 
+			return Ok();
+		}
 
-			if (project != null)
-			{
-				task.Project = project;
-				_dbContext.NonSprintTasks.Add(task);
-				_dbContext.SaveChanges();
-			}
+		[HttpPost("Backlog")]
+		public async Task<IActionResult> Backlog([FromBody] NonSprintTaskViewModel model)
+		{
+			Model.NonSprintTask task = _mapper.Map<Model.NonSprintTask>(model);
+			task.IsBacklog = true;
+			task.Id = Guid.NewGuid();
+
+			_dbContext.NonSprintTasks.Add(task);
+			_dbContext.SaveChanges();
 
 			return Ok();
 		}
@@ -95,11 +85,8 @@ namespace ProSMan.Backend.API.Controllers
 
 			if (entity != null)
 			{
-				entity.Name = model.Name;
-				entity.Priority = (Model.Priority)model.Priority;
-				entity.Description = model.Description;
-				entity.IsFinished = model.IsFinished;
-				entity.TimeEstimate = model.TimeEstimate;
+				var nonSprintTask = _mapper.Map<NonSprintTask>(model);
+				_dbContext.NonSprintTasks.Update(nonSprintTask);
 				_dbContext.SaveChanges();
 			}
 
@@ -119,6 +106,51 @@ namespace ProSMan.Backend.API.Controllers
 				_dbContext.NonSprintTasks.Update(entity);
 				await _dbContext.SaveChangesAsync();
 			}
+
+			return Ok();
+		}
+
+		[HttpPut("MoveToSprint")]
+		public async Task<IActionResult> MoveToSprint([FromBody] TaskMoveViewModel model)
+		{
+			var nonSprintTask = await _dbContext.NonSprintTasks.FirstOrDefaultAsync(x => x.Id == model.Id);
+
+			if (nonSprintTask == null)
+			{
+				return BadRequest();
+			}
+
+			Project project = await _dbContext.Projects
+				.Where(x => x.Id == nonSprintTask.ProjectId)
+				.SingleOrDefaultAsync();
+
+			Category category = await _dbContext.Categories
+				.Where(x => x.Id == model.CategoryId)
+				.SingleOrDefaultAsync();
+
+			Sprint sprint = await _dbContext.Sprints
+				.Where(x => x.Id == model.SprintId)
+				.SingleOrDefaultAsync();
+
+			var task = new Model.Task
+			{
+				Id = model.Id,
+				SprintId = model.SprintId,
+				CategoryId = model.CategoryId,
+				Name = nonSprintTask.Name,
+				Description = nonSprintTask.Description,
+				TimeEstimate = nonSprintTask.TimeEstimate,
+				Priority = nonSprintTask.Priority,
+				IsFinished = nonSprintTask.IsFinished,
+				Date = nonSprintTask.Date,
+				Sprint = sprint,
+				Project = project,
+				Category = category
+			};
+
+			_dbContext.Tasks.Add(task);
+			_dbContext.NonSprintTasks.Remove(nonSprintTask);
+			await _dbContext.SaveChangesAsync();
 
 			return Ok();
 		}

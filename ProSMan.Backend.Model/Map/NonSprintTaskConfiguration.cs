@@ -11,10 +11,6 @@ namespace ProSMan.Backend.Model.Map
 			entity.ToTable("NonSprintTasks");
 			entity.HasKey(x => x.Id);
 
-			entity.Property(x => x.Id)
-				.IsRequired()
-				.ValueGeneratedNever();
-
 			entity.HasOne(x => x.Project)
 				.WithMany(x => x.NonSprintTasks)
 				.HasForeignKey(x => x.ProjectId)

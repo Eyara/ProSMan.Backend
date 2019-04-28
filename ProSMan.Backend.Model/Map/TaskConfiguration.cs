@@ -12,10 +12,6 @@ namespace ProSMan.Backend.Model
 			entity.ToTable("Tasks");
 			entity.HasKey(x => x.Id);
 
-			entity.Property(x => x.Priority)
-				.HasConversion(x => x.ToString(),
-					x => (Priority)Enum.Parse(typeof(Priority), x));
-
 			entity.HasOne(x => x.Project)
 				.WithMany(x => x.Tasks)
 				.HasForeignKey(x => x.ProjectId)

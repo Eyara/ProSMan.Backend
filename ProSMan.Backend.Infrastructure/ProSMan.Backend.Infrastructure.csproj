@@ -10,6 +10,8 @@
     <Compile Remove="Migrations\20190302171454_AddedUserIdFieldToProjectTable.cs" />
     <Compile Remove="Migrations\20190302174609_AddedUserIdFieldToProjectTable.cs" />
     <Compile Remove="Migrations\20190308212605_AddDateFieldToTasks.cs" />
+    <Compile Remove="Migrations\20190426203328_RemovedEnumConversation.cs" />
+    <Compile Remove="Migrations\20190426210424_ChangedPriorityValueToInt.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProSMan.Backend.Core.Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -18,12 +19,5 @@ namespace ProSMan.Backend.Domain.ViewModels
 		public Guid ProjectId { get; set; }
 		public Guid CategoryId { get; set; }
 		public Guid SprintId { get; set; }
-	}
-
-	public enum Priority : int
-	{
-		Low = 1,
-		Medium,
-		High
 	}
 }
