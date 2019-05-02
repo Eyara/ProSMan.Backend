@@ -51,7 +51,10 @@ namespace HealthyWorkout.Backend.Controllers
 
 				if (user == null)
 				{
-					return BadRequest("Такого пользователя не существует");
+					return BadRequest(new
+					{
+						ErrorDescription = "Данного пользователя не существует"
+					});
 				}
 
 				var result = await _userManager.CheckPasswordAsync(user, request.Password);
@@ -64,7 +67,7 @@ namespace HealthyWorkout.Backend.Controllers
 					return BadRequest(new OpenIdConnectResponse
 					{
 						Error = OpenIdConnectConstants.Errors.InvalidGrant,
-						ErrorDescription = "The username/password couple is invalid."
+						ErrorDescription = "Неправильные логин/пароль"
 					});
 				}
 			}
@@ -104,7 +107,10 @@ namespace HealthyWorkout.Backend.Controllers
 
 			if (userIsExist)
 			{
-				return BadRequest("Такой пользователь уже существует");
+				return BadRequest(new
+				{
+					ErrorDescription = "Такой пользователь уже существует"
+				});
 			}
 
 			var user = new User { UserName = model.Username, Fullname = model.Fullname };
@@ -117,7 +123,10 @@ namespace HealthyWorkout.Backend.Controllers
 			}
 			else
 			{
-				return BadRequest("Произошла неизвестная ошибка.");
+				return BadRequest(new
+				{
+					ErrorDescription = "Произошла неизвестная ошибка"
+				});
 			}
 		}
 
