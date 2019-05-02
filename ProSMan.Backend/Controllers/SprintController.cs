@@ -49,11 +49,24 @@ namespace ProSMan.Backend.API.Controllers
 			return Ok(new { data = entities });
 		}
 
+		[HttpGet("GetUnfinished")]
+		public async Task<IActionResult> GetUnfinishedByProjectId(Guid id)
+		{
+			var entities = await _dbContext.Sprints
+				.Where(x => !x.IsDeleted && !x.IsFinished && x.ProjectId == id)
+				.OrderBy(x => x.FromDate)
+				.ProjectTo<SprintViewModel>(_mapper.ConfigurationProvider)
+				.ToListAsync();
+
+			return Ok(new { data = entities });
+		}
+
 		[HttpGet("GetByProjectId")]
 		public async Task<IActionResult> GetByProjectId(Guid id)
 		{
 			var entities = await _dbContext.Sprints
 				.Where(x => x.ProjectId == id && !x.IsDeleted)
+				.OrderBy(x => x.FromDate)
 				.ProjectTo<SprintViewModel>(_mapper.ConfigurationProvider)
 				.ToListAsync();
 
