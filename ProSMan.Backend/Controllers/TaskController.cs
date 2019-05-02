@@ -116,6 +116,8 @@ namespace ProSMan.Backend.API.Controllers
 			if (entity != null)
 			{
 				entity.IsFinished = !entity.IsFinished;
+				entity.FinishedOn = entity.IsFinished ? DateTime.UtcNow : (DateTime?)null;
+
 				_dbContext.Update(entity);
 				await _dbContext.SaveChangesAsync();
 			}
