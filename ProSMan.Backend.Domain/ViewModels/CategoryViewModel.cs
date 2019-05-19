@@ -7,6 +7,7 @@ namespace ProSMan.Backend.Domain.ViewModels
 	{
 		public Guid Id { get; set; }
 		public string Name { get; set; }
+		public bool IsDeleted { get; set; }
 
 		public Guid ProjectId { get; set; }
 	}
