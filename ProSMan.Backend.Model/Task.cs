@@ -1,10 +1,11 @@
 ﻿using ProSMan.Backend.Core;
 using ProSMan.Backend.Core.Enums;
+using ProSMan.Backend.Core.Interfaces.Entities;
 using System;
 
 namespace ProSMan.Backend.Model
 {
-	public class Task : IEntityBase<Guid>
+	public class Task : IEntityBase<Guid>, ITask
 	{
 		public Task()
 		{

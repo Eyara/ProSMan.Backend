@@ -1,11 +1,11 @@
 ﻿using ProSMan.Backend.Core;
+using ProSMan.Backend.Core.Interfaces.Entities;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ProSMan.Backend.Model
 {
-	public class Category : IEntityBase<Guid>
+	public class Category : IEntityBase<Guid>, ICategory
 	{
 		public Category()
 		{

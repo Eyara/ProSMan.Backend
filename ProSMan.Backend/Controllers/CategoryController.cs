@@ -1,14 +1,16 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using ProSMan.Backend.API.Application.Commands.Categories;
+using ProSMan.Backend.API.Application.Queries.Category;
 using ProSMan.Backend.Controllers;
 using ProSMan.Backend.Domain.ViewModels;
 using ProSMan.Backend.Infrastructure;
 using ProSMan.Backend.Model;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,89 +20,41 @@ namespace ProSMan.Backend.API.Controllers
 	{
 		public CategoryController(ILoggerFactory loggerFactory,
 			ProSManContext dbContext,
-			IMapper autoMapper
+			IMapper autoMapper,
+			IMediator mediator
 			) : base(loggerFactory)
 		{
 			_dbContext = dbContext;
 			_mapper = autoMapper;
+			_mediator = mediator;
 		}
 
 		public ProSManContext _dbContext { get; set; }
+		public IMediator _mediator { get; set; }
 		private readonly IMapper _mapper;
-
-		[HttpGet]
-		public async Task<IActionResult> GetAll()
-		{
-			var entities = await _dbContext.Categories
-				.Where(x => !x.IsDeleted)
-				.ProjectTo<CategoryViewModel>(_mapper.ConfigurationProvider)
-				.ToListAsync();
-
-			return Ok(new { data = entities });
-		}
 
 		[HttpGet("GetByProjectId")]
 		public async Task<IActionResult> GetByProjectId(Guid id)
 		{
-			var entities = await _dbContext.Categories
-				.Where(x => x.ProjectId == id && !x.IsDeleted)
-				.ProjectTo<CategoryViewModel>(_mapper.ConfigurationProvider)
-				.ToListAsync();
-
-			return Ok(new { data = entities });
+			return Ok(await _mediator.Send(new GetCategoryByProjectIdQuery(id)));
 		}
 
 		[HttpPost]
 		public async Task<IActionResult> Post([FromBody] CategoryViewModel model)
 		{
-			Category category = _mapper.Map<Category>(model);
-			category.Id = Guid.NewGuid();
-
-			Project project = await _dbContext.Projects
-				.Where(x => x.Id == model.ProjectId)
-				.SingleOrDefaultAsync();
-
-			if (project != null)
-			{
-				category.Project = project;
-				_dbContext.Categories.Add(category);
-				_dbContext.SaveChanges();
-			}
-
-			return Ok();
+			return Ok(await _mediator.Send(new AddCategoryCommand(model)));
 		}
 
 		[HttpPut]
-		public async Task<IActionResult> UpdateCategory([FromBody] CategoryViewModel model)
+		public async Task<IActionResult> Put([FromBody] CategoryViewModel model)
 		{
-			var entity = await _dbContext.Categories
-				.Where(x => x.Id == model.Id)
-				.SingleOrDefaultAsync();
-
-			if (entity != null)
-			{
-				entity.Name = model.Name;
-				_dbContext.SaveChanges();
-			}
-
-			return Ok();
+			return Ok(await _mediator.Send(new UpdateCategoryCommand(model)));
 		}
 
 		[HttpDelete]
 		public async Task<IActionResult> Delete(Guid id)
 		{
-			var entity = await _dbContext.Categories
-				.Where(x => x.Id == id)
-				.SingleOrDefaultAsync();
-
-			if (entity != null)
-			{
-				entity.IsDeleted = true;
-				_dbContext.Update(entity);
-				_dbContext.SaveChanges();
-			}
-
-			return Ok();
+			return Ok(await _mediator.Send(new DeleteCategoryCommand(id)));
 		}
 
 	}
