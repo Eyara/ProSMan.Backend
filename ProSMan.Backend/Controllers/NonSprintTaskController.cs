@@ -1,14 +1,16 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using ProSMan.Backend.API.Application.Commands.NonSprintTasks;
+using ProSMan.Backend.API.Application.Queries.NonSprintTasks;
 using ProSMan.Backend.Controllers;
 using ProSMan.Backend.Domain.ViewModels;
 using ProSMan.Backend.Infrastructure;
 using ProSMan.Backend.Model;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,62 +20,42 @@ namespace ProSMan.Backend.API.Controllers
 	{
 		public NonSprintTaskController(ILoggerFactory loggerFactory,
 			ProSManContext dbContext,
-			IMapper autoMapper
+			IMapper autoMapper,
+			IMediator mediator
 			) : base(loggerFactory)
 		{
 			_dbContext = dbContext;
 			_mapper = autoMapper;
+			_mediator = mediator;
 		}
 
 		public ProSManContext _dbContext { get; set; }
+		public IMediator _mediator { get; set; }
 		private readonly IMapper _mapper;
 
 		[HttpGet]
 		public async Task<IActionResult> GetNonSprintTasks(Guid projectId)
 		{
-			var entities = await _dbContext.NonSprintTasks
-				.Where(x => !x.IsBacklog && x.ProjectId == projectId)
-				.ProjectTo<NonSprintTaskViewModel>(_mapper.ConfigurationProvider)
-				.ToListAsync();
-
-			return Ok(new { data = entities });
+			return Ok(await _mediator.Send(new GetNonSprintsTasksByProjectQuery(projectId)));
 		}
 
 		[HttpGet("getBacklog")]
 		public async Task<IActionResult> GetBacklog(Guid projectId)
 		{
-			var entities = await _dbContext.NonSprintTasks
-				.Where(x => x.IsBacklog && x.ProjectId == projectId)
-				.ProjectTo<NonSprintTaskViewModel>(_mapper.ConfigurationProvider)
-				.ToListAsync();
-
-			return Ok(new { data = entities });
+			return Ok(await _mediator.Send(new GetBacklogByProjectQuery(projectId)));
 		}
 
 
 		[HttpPost]
 		public async Task<IActionResult> Post([FromBody] NonSprintTaskViewModel model)
 		{
-			Model.NonSprintTask task = _mapper.Map<Model.NonSprintTask>(model);
-			task.Id = Guid.NewGuid();
-
-			_dbContext.NonSprintTasks.Add(task);
-			_dbContext.SaveChanges();
-
-			return Ok();
+			return Ok(await _mediator.Send(new AddNonSprintTaskCommand(model)));
 		}
 
 		[HttpPost("Backlog")]
 		public async Task<IActionResult> Backlog([FromBody] NonSprintTaskViewModel model)
 		{
-			Model.NonSprintTask task = _mapper.Map<Model.NonSprintTask>(model);
-			task.IsBacklog = true;
-			task.Id = Guid.NewGuid();
-
-			_dbContext.NonSprintTasks.Add(task);
-			_dbContext.SaveChanges();
-
-			return Ok();
+			return Ok(await _mediator.Send(new AddBacklogCommand(model)));
 		}
 
 		[HttpPut]

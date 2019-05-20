@@ -1,7 +1,5 @@
 ﻿using MediatR;
-using ProSMan.Backend.Domain.Base;
 using ProSMan.Backend.Domain.ViewModels;
-using System;
 
 namespace ProSMan.Backend.API.Application.Commands.Tasks
 {
