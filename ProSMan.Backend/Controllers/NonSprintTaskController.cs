@@ -61,35 +61,13 @@ namespace ProSMan.Backend.API.Controllers
 		[HttpPut]
 		public async Task<IActionResult> UpdateTask([FromBody] NonSprintTaskViewModel model)
 		{
-			var entity = await _dbContext.NonSprintTasks
-				.Where(x => x.Id == model.Id)
-				.SingleOrDefaultAsync();
-
-			if (entity != null)
-			{
-				var nonSprintTask = _mapper.Map<NonSprintTask>(model);
-				_dbContext.NonSprintTasks.Update(nonSprintTask);
-				_dbContext.SaveChanges();
-			}
-
-			return Ok();
+			return Ok(await _mediator.Send(new UpdateNonSprintTaskCommand(model)));
 		}
 
 		[HttpPost("ToggleFinishTask")]
 		public async Task<IActionResult> ToggleFinishTask(Guid id)
 		{
-			var entity = await _dbContext.NonSprintTasks
-				.Where(x => x.Id == id)
-				.SingleOrDefaultAsync();
-
-			if (entity != null)
-			{
-				entity.IsFinished = !entity.IsFinished;
-				_dbContext.NonSprintTasks.Update(entity);
-				await _dbContext.SaveChangesAsync();
-			}
-
-			return Ok();
+			return Ok(await _mediator.Send(new FinishNonSprintTaskCommand(id)));
 		}
 
 		[HttpPut("MoveToSprint")]
@@ -140,17 +118,7 @@ namespace ProSMan.Backend.API.Controllers
 		[HttpDelete]
 		public async Task<IActionResult> Delete(Guid id)
 		{
-			var entity = await _dbContext.NonSprintTasks
-				.Where(x => x.Id == id)
-				.SingleOrDefaultAsync();
-
-			if (entity != null)
-			{
-				_dbContext.NonSprintTasks.Remove(entity);
-				_dbContext.SaveChanges();
-			}
-
-			return Ok();
+			return Ok(await _mediator.Send(new DeleteNonSprintTaskCommand(id)));
 		}
 	}
 }
