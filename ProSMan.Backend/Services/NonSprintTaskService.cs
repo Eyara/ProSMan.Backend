@@ -95,7 +95,7 @@ namespace ProSMan.Backend.API.Services
 				.OrderBy(x => x.IsFinished)
 				.ThenByDescending(x => x.Priority)
 				.ThenBy(x => x.Name)
-				.ProjectTo<TaskViewModel>(_mapper.ConfigurationProvider)
+				.ProjectTo<NonSprintTaskViewModel>(_mapper.ConfigurationProvider)
 				.OfType<INonSprintTask>()
 				.ToList();
 		}
