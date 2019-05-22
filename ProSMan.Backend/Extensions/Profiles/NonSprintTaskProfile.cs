@@ -9,11 +9,10 @@ namespace ProSMan.Backend.API.Extensions.Profiles
 		public NonSprintTaskProfile()
 		{
 			CreateMap<NonSprintTask, NonSprintTaskViewModel>()
-				.ForMember(dest => dest.ProjectId, opts => opts.MapFrom(src => src.Project.Id));
+				.ForMember(dest => dest.ProjectId, opts => opts.MapFrom(src => src.ProjectId));
 
 			CreateMap<NonSprintTaskViewModel, NonSprintTask>()
 				.ForMember(dest => dest.Project, opts => opts.Ignore())
-				.ForMember(dest => dest.IsBacklog, opts => opts.Ignore())
 				.ForMember(dest => dest.FinishedOn, opts => opts.Ignore());
 
 			CreateMap<TaskViewModel, NonSprintTask>()

@@ -8,14 +8,12 @@ namespace ProSMan.Backend.API.Profiles
 	{
 		public SprintProfile()
 		{
-			CreateMap<Sprint, SprintViewModel>()
-				.ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
-				.ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name))
-				.ForMember(dest => dest.FromDate, opts => opts.MapFrom(src => src.FromDate))
-				.ForMember(dest => dest.ToDate, opts => opts.MapFrom(src => src.ToDate))
-				.ForMember(dest => dest.IsFinished, opts => opts.MapFrom(src => src.IsFinished))
-				.ForMember(dest => dest.ProjectId, opts => opts.MapFrom(src => src.Project.Id))
-				.ReverseMap();
+			CreateMap<Sprint, SprintViewModel>();
+
+			CreateMap<SprintViewModel, Sprint>()
+				.ForMember(dest => dest.ProjectId, opts => opts.MapFrom(src => src.ProjectId))
+				.ForMember(dest => dest.Project, opts => opts.Ignore())
+				.ForMember(dest => dest.Tasks, opts => opts.Ignore());
 		}
 	}
 }

@@ -11,13 +11,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using ProSMan.Backend.API.Profiles;
 using ProSMan.Backend.Infrastructure;
 using ProSMan.Backend.Model;
 using Swashbuckle.AspNetCore.Swagger;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
+using MediatR;
+using ProSMan.Backend.Core.Interfaces.Services;
+using ProSMan.Backend.API.Services;
 
 namespace ProSMan.Backend
 {
@@ -29,8 +31,7 @@ namespace ProSMan.Backend
 		}
 
 		public IConfiguration Configuration { get; }
-
-		// This method gets called by the runtime. Use this method to add services to the container.
+		
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddDbContext<ProSManContext>(options =>
@@ -55,9 +56,6 @@ namespace ProSMan.Backend
 			{
 				options.Events = new OAuthValidationEvents
 				{
-					// Note: for SignalR connections, the default Authorization header does not work,
-					// because the WebSockets JS API doesn't allow setting custom parameters.
-					// To work around this limitation, the access token is retrieved from the query string.
 					OnRetrieveToken = context =>
 					{
 						context.Properties.AllowRefresh = true;
@@ -98,6 +96,14 @@ namespace ProSMan.Backend
 					options.DisableScopeValidation();
 				});
 
+			services.AddScoped<ITaskService, TaskService>();
+			services.AddScoped<IProjectService, ProjectService>();
+			services.AddScoped<ISprintService, SprintService>();
+			services.AddScoped<ICategoryService, CategoryService>();
+			services.AddScoped<INonSprintTaskService, NonSprintTaskService>();
+
+			services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
+
 			services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
 			{
 				builder.AllowAnyOrigin()
@@ -120,7 +126,6 @@ namespace ProSMan.Backend
 			});
 		}
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env, IMapper mapper)
 		{
 			app.UseAuthentication();

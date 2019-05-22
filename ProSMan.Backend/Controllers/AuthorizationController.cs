@@ -16,7 +16,6 @@ using OpenIddict.Server;
 using ProSMan.Backend.Model;
 using ProSMan.Backend.Infrastructure;
 using ProSMan.Backend.Domain.ViewModels;
-using System.Text;
 
 namespace HealthyWorkout.Backend.Controllers
 {

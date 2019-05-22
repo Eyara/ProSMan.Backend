@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ProSMan.Backend.Domain.ViewModels;
 using ProSMan.Backend.Model;
+using System;
 
 namespace ProSMan.Backend.API.Profiles
 {
