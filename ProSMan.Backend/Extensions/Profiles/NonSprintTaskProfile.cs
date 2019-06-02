@@ -12,14 +12,12 @@ namespace ProSMan.Backend.API.Extensions.Profiles
 				.ForMember(dest => dest.ProjectId, opts => opts.MapFrom(src => src.ProjectId));
 
 			CreateMap<NonSprintTaskViewModel, NonSprintTask>()
-				.ForMember(dest => dest.Project, opts => opts.Ignore())
-				.ForMember(dest => dest.FinishedOn, opts => opts.Ignore());
+				.ForMember(dest => dest.Project, opts => opts.Ignore());
 
 			CreateMap<TaskViewModel, NonSprintTask>()
 				.ForMember(dest => dest.ProjectId, opts => opts.MapFrom(src => src.ProjectId))
 				.ForMember(dest => dest.Project, opts => opts.Ignore())
-				.ForMember(dest => dest.IsBacklog, opts => opts.Ignore())
-				.ForMember(dest => dest.FinishedOn, opts => opts.Ignore());
+				.ForMember(dest => dest.IsBacklog, opts => opts.Ignore());
 		}
     }
 }
