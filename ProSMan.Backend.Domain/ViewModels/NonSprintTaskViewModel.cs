@@ -13,6 +13,7 @@ namespace ProSMan.Backend.Domain.ViewModels
 		public Priority Priority { get; set; }
 		public bool IsBacklog { get; set; }
 		public bool IsFinished { get; set; }
+		public DateTime? FinishedOn { get; set; }
 		public DateTime? Date { get; set; }
 
 		public Guid ProjectId { get; set; }

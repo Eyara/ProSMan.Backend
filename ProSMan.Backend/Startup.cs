@@ -40,13 +40,12 @@ namespace ProSMan.Backend
 						b => b.MigrationsAssembly(typeof(ProSManContext).Assembly.GetName().Name));
 
 				options.UseOpenIddict();
-			});
+			}, ServiceLifetime.Transient);
 
 			services.AddIdentity<User, IdentityRole>()
 				.AddEntityFrameworkStores<ProSManContext>()
 				.AddDefaultTokenProviders();
-
-
+			
 			services.AddAuthentication(options =>
 			{
 				options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -101,6 +100,7 @@ namespace ProSMan.Backend
 			services.AddScoped<ISprintService, SprintService>();
 			services.AddScoped<ICategoryService, CategoryService>();
 			services.AddScoped<INonSprintTaskService, NonSprintTaskService>();
+			services.AddScoped<IDashboardService, DashboardService>();
 
 			services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
 
