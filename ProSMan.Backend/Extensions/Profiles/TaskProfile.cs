@@ -17,8 +17,7 @@ namespace ProSMan.Backend.API.Profiles
 			CreateMap<TaskViewModel, Task>()
 				.ForMember(dest => dest.Project, opts => opts.Ignore())
 				.ForMember(dest => dest.Category, opts => opts.Ignore())
-				.ForMember(dest => dest.Sprint, opts => opts.Ignore())
-				.ForMember(dest => dest.FinishedOn, opts => opts.Ignore());
+				.ForMember(dest => dest.Sprint, opts => opts.Ignore());
 
 			CreateMap<Task, NonSprintTask>()
 				.ForMember(dest => dest.Project, opts => opts.Ignore())
