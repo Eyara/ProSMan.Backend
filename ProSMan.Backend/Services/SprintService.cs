@@ -86,6 +86,7 @@ namespace ProSMan.Backend.API.Services
 				var sprint = _mapper.Map<Sprint>(model as SprintViewModel);
 				
 				sprint.IsFinished = true;
+				sprint.FinishedOn = DateTime.UtcNow;
 
 				var nonFinishedTasks = _dbContext.Tasks
 					.Where(x => x.SprintId == sprint.Id && !x.IsFinished)
