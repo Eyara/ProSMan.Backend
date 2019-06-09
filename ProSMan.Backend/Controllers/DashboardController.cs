@@ -28,12 +28,10 @@ namespace ProSMan.Backend.Controllers
 		{
 			var userName = User.Claims.Where(x => x.Type == "name").FirstOrDefault()?.Value;
 
-			//if (userName == null)
-			//{
-			//	return Unauthorized();
-			//}
-
-			userName = "Eyara";
+			if (userName == null)
+			{
+				return Unauthorized();
+			}
 
 			return Ok(await _mediator.Send(new GetDashboardQuery(userName)));
 		}

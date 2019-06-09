@@ -43,12 +43,10 @@ namespace ProSMan.Backend.API.Services
 		{
 			try
 			{
-				var castedUser = user as User;
 				var project = _mapper.Map<Project>(model as ProjectViewModel);
 
 				project.Id = Guid.NewGuid();
-				project.User = castedUser;
-				project.UserId = castedUser.Id;
+				project.UserId = user.Id;
 
 				_dbContext.Projects.Add(project);
 				_dbContext.SaveChanges();

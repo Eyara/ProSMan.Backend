@@ -1,7 +1,6 @@
 ﻿using ProSMan.Backend.Core;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ProSMan.Backend.Model
 {
@@ -14,7 +13,7 @@ namespace ProSMan.Backend.Model
 		public Guid Id { get; set; }
 		public string Name { get; set; }
 		public DateTime FromDate { get; set; }
-		public DateTime ToDate { get; set; }
+		public DateTime? FinishedOn { get; set; }
 		public Boolean IsFinished { get; set; }
 		public Boolean IsDeleted { get; set; }
 

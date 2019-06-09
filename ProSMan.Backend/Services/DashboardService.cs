@@ -56,6 +56,7 @@ namespace ProSMan.Backend.API.Services
 		{
 			var sprints = _dbContext.Sprints
 				.Where(x => x.ProjectId == projectId && !x.IsDeleted)
+				.OrderBy(x => x.FromDate)
 				.ToList();
 
 			return sprints
@@ -71,6 +72,7 @@ namespace ProSMan.Backend.API.Services
 		{
 			return _dbContext.Tasks
 				.Where(x => x.SprintId == sprintId && x.FinishedOn.HasValue)
+				.OrderBy(x => x.Date)
 				.GroupBy(x => x.FinishedOn)
 				.Select(x => new TaskDashboard
 				{
