@@ -42,7 +42,7 @@ namespace ProSMan.Backend.Controllers
 		[HttpGet("GetById")]
 		public async Task<IActionResult> GetById(Guid id)
 		{
-			return Ok(new GetProjectsByIdQuery(id));
+			return Ok(await _mediator.Send(new GetProjectsByIdQuery(id)));
 		}
 
 		[HttpPost]

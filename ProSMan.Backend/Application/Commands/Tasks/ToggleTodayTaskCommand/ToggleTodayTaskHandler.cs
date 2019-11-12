@@ -17,15 +17,16 @@ namespace ProSMan.Backend.API.Application.Commands.Tasks
 		}
 
 		public async Task<bool> Handle(ToggleTodayTaskCommand request, CancellationToken cancellationToken)
-		{	
+		{
 			var entity = _taskService.GetItemById(request.Id);
 
 			if (entity == null)
 			{
 				return false;
 			}
-			
-			entity.Date = !entity.Date.HasValue ? DateTime.Today : (DateTime?)null;
+
+			entity.Date = !entity.Date.HasValue || entity.Date.HasValue &&
+				entity.Date.Value.Date != DateTime.Today.Date ? DateTime.Today : (DateTime?)null;
 
 			return _taskService.Update(entity);
 		}
