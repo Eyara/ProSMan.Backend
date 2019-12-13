@@ -39,6 +39,13 @@ namespace ProSMan.Backend.API.Services
 			return GetList(x => !x.IsDeleted && x.Id == id);
 		}
 
+		public IProject GetEntityById(Guid id)
+		{
+			return _dbContext.Projects
+				.Where(x => x.Id == id)
+				.FirstOrDefault();
+		}
+
 		public bool Add(IProject model, IUser user)
 		{
 			try
@@ -59,11 +66,12 @@ namespace ProSMan.Backend.API.Services
 			}
 		}
 
-		public bool Update(IProject model)
+		public bool Update(IProject model, IProject entity)
 		{
 			try
 			{
-				var project = _mapper.Map<Project>(model as ProjectViewModel);
+				var project = entity as Project;
+				project.Name = (model as ProjectViewModel).Name;
 				_dbContext.Projects.Update(project);
 				_dbContext.SaveChanges();
 

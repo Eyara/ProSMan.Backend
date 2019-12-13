@@ -17,14 +17,14 @@ namespace ProSMan.Backend.API.Application.Commands.Projects
 
 		public async Task<bool> Handle(UpdateProjectCommand request, CancellationToken cancellationToken)
 		{
-			var entity = _projectService.GetItemById(request.Project.Id);
+			var entity = _projectService.GetEntityById(request.Project.Id);
 
 			if (entity == null)
 			{
 				return false;
 			}
 
-			return _projectService.Update(request.Project);
+			return _projectService.Update(request.Project, entity);
 		}
 	}
 }
