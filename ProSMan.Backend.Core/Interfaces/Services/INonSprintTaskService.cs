@@ -8,7 +8,7 @@ namespace ProSMan.Backend.Core.Interfaces.Services
     {
 		INonSprintTask GetItemById(Guid id);
 		List<INonSprintTask> GetListByProject(Guid id);
-		List<INonSprintTask> GetBacklogListByProject(Guid id);
+		List<INonSprintTask> GetListToday(string username);
 		bool Add(INonSprintTask model);
 		bool Update(INonSprintTask model);
 		bool Delete(INonSprintTask model);

@@ -4,17 +4,17 @@ using ProSMan.Backend.Model;
 
 namespace ProSMan.Backend.API.Extensions.Profiles
 {
-    public class NonSprintTaskProfile: Profile
+    public class BacklogTaskProfile: Profile
     {
-		public NonSprintTaskProfile()
+		public BacklogTaskProfile()
 		{
-			CreateMap<NonSprintTask, NonSprintTaskViewModel>()
+			CreateMap<BacklogTask, BacklogTaskViewModel>()
 				.ForMember(dest => dest.ProjectId, opts => opts.MapFrom(src => src.ProjectId));
 
-			CreateMap<NonSprintTaskViewModel, NonSprintTask>()
+			CreateMap<BacklogTaskViewModel, BacklogTask>()
 				.ForMember(dest => dest.Project, opts => opts.Ignore());
 
-			CreateMap<TaskViewModel, NonSprintTask>()
+			CreateMap<TaskViewModel, BacklogTask>()
 				.ForMember(dest => dest.ProjectId, opts => opts.MapFrom(src => src.ProjectId))
 				.ForMember(dest => dest.Project, opts => opts.Ignore());
 		}

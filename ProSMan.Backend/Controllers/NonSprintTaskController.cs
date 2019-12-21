@@ -27,23 +27,11 @@ namespace ProSMan.Backend.API.Controllers
 			return Ok(await _mediator.Send(new GetNonSprintsTasksByProjectQuery(projectId)));
 		}
 
-		[HttpGet("getBacklog")]
-		public async Task<IActionResult> GetBacklog(Guid projectId)
-		{
-			return Ok(await _mediator.Send(new GetBacklogByProjectQuery(projectId)));
-		}
-
 
 		[HttpPost]
 		public async Task<IActionResult> Post([FromBody] NonSprintTaskViewModel model)
 		{
 			return Ok(await _mediator.Send(new AddNonSprintTaskCommand(model)));
-		}
-
-		[HttpPost("Backlog")]
-		public async Task<IActionResult> Backlog([FromBody] NonSprintTaskViewModel model)
-		{
-			return Ok(await _mediator.Send(new AddBacklogCommand(model)));
 		}
 
 		[HttpPut]
@@ -58,10 +46,10 @@ namespace ProSMan.Backend.API.Controllers
 			return Ok(await _mediator.Send(new FinishNonSprintTaskCommand(id)));
 		}
 
-		[HttpPut("MoveToSprint")]
-		public async Task<IActionResult> MoveToSprint([FromBody] TaskMoveModel model)
-		{ 
-			return Ok(await _mediator.Send(new MoveToSprintCommand(model)));
+		[HttpPut("ToggleTodayTask")]
+		public async Task<IActionResult> ToggleTodayTask(Guid id)
+		{
+			return Ok(await _mediator.Send(new ToggleTodayTaskCommand(id)));
 		}
 
 		[HttpDelete]

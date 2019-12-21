@@ -100,6 +100,7 @@ namespace ProSMan.Backend
 			services.AddScoped<ISprintService, SprintService>();
 			services.AddScoped<ICategoryService, CategoryService>();
 			services.AddScoped<INonSprintTaskService, NonSprintTaskService>();
+			services.AddScoped<IBacklogTaskService, BacklogTaskService>();
 			services.AddScoped<IDashboardService, DashboardService>();
 
 			services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);

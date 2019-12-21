@@ -3,22 +3,21 @@ using ProSMan.Backend.Core.Interfaces.Services;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ProSMan.Backend.API.Application.Commands.NonSprintTasks
+namespace ProSMan.Backend.API.Application.Commands.BacklogTasks
 {
     public class AddBacklogHandler : IRequestHandler<AddBacklogCommand, bool>
 	{
-		private INonSprintTaskService _nonSprintTaskService { get; set; }
+		private IBacklogTaskService _backlogTaskService { get; set; }
 
 		public AddBacklogHandler(
-			INonSprintTaskService nonSprintTaskService)
+			IBacklogTaskService backlogTaskService)
 		{
-			_nonSprintTaskService = nonSprintTaskService;
+			_backlogTaskService = backlogTaskService;
 		}
 
 		public async Task<bool> Handle(AddBacklogCommand request, CancellationToken cancellationToken)
 		{
-			request.Task.IsBacklog = true;
-			return _nonSprintTaskService.Add(request.Task);
+			return _backlogTaskService.Add(request.Task);
 		}
 	}
 }

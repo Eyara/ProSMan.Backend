@@ -3,9 +3,9 @@ using ProSMan.Backend.Domain.Base;
 using ProSMan.Backend.Domain.ViewModels;
 using System;
 
-namespace ProSMan.Backend.API.Application.Queries.NonSprintTasks
+namespace ProSMan.Backend.API.Application.Queries.BacklogTasks
 {
-    public class GetBacklogByProjectQuery : IRequest<ListRequest<NonSprintTaskViewModel>>
+    public class GetBacklogByProjectQuery : IRequest<ListRequest<BacklogTaskViewModel>>
 	{
 		public Guid Id { get; set; }
 

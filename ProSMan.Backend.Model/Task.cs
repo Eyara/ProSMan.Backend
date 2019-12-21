@@ -15,7 +15,6 @@ namespace ProSMan.Backend.Model
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public int TimeEstimate { get; set; }
-		public int ActualSpentTime { get; set; }
 		public Priority Priority { get; set; }
 		public DateTime? FinishedOn { get; set; }
 		public bool IsFinished { get; set; }
