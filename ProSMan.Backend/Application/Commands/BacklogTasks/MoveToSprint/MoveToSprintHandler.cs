@@ -4,24 +4,24 @@ using ProSMan.Backend.Domain.ViewModels;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ProSMan.Backend.API.Application.Commands.NonSprintTasks
+namespace ProSMan.Backend.API.Application.Commands.BacklogTasks
 {
 	public class MoveToSprintHandler : IRequestHandler<MoveToSprintCommand, bool>
 	{
-		private INonSprintTaskService _nonSprintTaskService { get; set; }
+		private IBacklogTaskService _backlogTaskService { get; set; }
 		private ITaskService _taskService { get; set; }
 
 		public MoveToSprintHandler(
-			INonSprintTaskService nonSprintTaskService,
+			IBacklogTaskService backlogTaskService,
 			ITaskService taskService)
 		{
-			_nonSprintTaskService = nonSprintTaskService;
+			_backlogTaskService = backlogTaskService;
 			_taskService = taskService;
 		}
 
 		public async Task<bool> Handle(MoveToSprintCommand request, CancellationToken cancellationToken)
 		{
-			var entity = _nonSprintTaskService.GetItemById(request.Task.Id);
+			var entity = _backlogTaskService.GetItemById(request.Task.Id);
 
 			if (entity == null)
 			{
@@ -35,15 +35,14 @@ namespace ProSMan.Backend.API.Application.Commands.NonSprintTasks
 				ProjectId = entity.ProjectId,
 				Name = entity.Name,
 				Description = entity.Description,
-				TimeEstimate = entity.TimeEstimate,
-				Priority = entity.Priority,
-				IsFinished = entity.IsFinished,
-				Date = entity.Date,
+				TimeEstimate = request.Task.TimeEstimate,
+				Priority = request.Task.Priority,
+				IsFinished = false,
+				Date = null,
 			};
 
 			_taskService.Add(task);
-			return _nonSprintTaskService.Delete(entity);
-
+			return _backlogTaskService.Delete(entity);
 		}
 	}
 }

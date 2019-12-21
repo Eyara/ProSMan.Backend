@@ -18,6 +18,7 @@ namespace ProSMan.Backend.Infrastructure
 		public DbSet<Sprint> Sprints { get; set; }
 		public DbSet<Task> Tasks { get; set; }
 		public DbSet<NonSprintTask> NonSprintTasks { get; set; }
+		public DbSet<BacklogTask> BacklogTasks { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder builder)
 		{

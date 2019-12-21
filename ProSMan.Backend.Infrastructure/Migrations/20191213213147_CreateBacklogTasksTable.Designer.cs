@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProSMan.Backend.Infrastructure;
 
 namespace ProSMan.Backend.Infrastructure.Migrations
 {
     [DbContext(typeof(ProSManContext))]
-    partial class ProSManContextModelSnapshot : ModelSnapshot
+    [Migration("20191213213147_CreateBacklogTasksTable")]
+    partial class CreateBacklogTasksTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -342,6 +344,8 @@ namespace ProSMan.Backend.Infrastructure.Migrations
 
                     b.Property<DateTime?>("FinishedOn");
 
+                    b.Property<bool>("IsBacklog");
+
                     b.Property<bool>("IsFinished");
 
                     b.Property<string>("Name");
@@ -403,6 +407,8 @@ namespace ProSMan.Backend.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<int>("ActualSpentTime");
 
                     b.Property<Guid?>("CategoryId");
 

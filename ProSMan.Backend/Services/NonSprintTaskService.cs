@@ -30,12 +30,13 @@ namespace ProSMan.Backend.API.Services
 
 		public List<INonSprintTask> GetListByProject(Guid id)
 		{
-			return GetOrderedList(x => !x.IsBacklog && x.ProjectId == id);
+			return GetOrderedList(x => x.ProjectId == id);
 		}
 
-		public List<INonSprintTask> GetBacklogListByProject(Guid id)
+		public List<INonSprintTask> GetListToday(string username)
 		{
-			return GetOrderedList(x => x.IsBacklog && x.ProjectId == id);
+			return GetOrderedList(x => (x.Date ?? DateTime.MinValue).Date == DateTime.Today.Date &&
+					x.Project.User.UserName == username);
 		}
 
 		public bool Add(INonSprintTask model)

@@ -92,13 +92,12 @@ namespace ProSMan.Backend.API.Services
 					.Where(x => x.SprintId == sprint.Id && !x.IsFinished)
 					.ToList();
 
-				var nonSprintTasks = _mapper
-					.Map<List<NonSprintTask>>(nonFinishedTasks);
 
-				nonSprintTasks.ForEach(x => x.IsBacklog = true);
+				var backlogTasks = _mapper
+					.Map<List<BacklogTask>>(nonFinishedTasks);
 
 				_dbContext.Sprints.Update(sprint);
-				_dbContext.NonSprintTasks.AddRange(nonSprintTasks);
+				_dbContext.BacklogTasks.AddRange(backlogTasks);
 				_dbContext.Tasks.RemoveRange(nonFinishedTasks);
 				_dbContext.SaveChanges();
 

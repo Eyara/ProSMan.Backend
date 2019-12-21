@@ -20,8 +20,7 @@ namespace ProSMan.Backend.API.Profiles
 				.ForMember(dest => dest.Sprint, opts => opts.Ignore());
 
 			CreateMap<Task, NonSprintTask>()
-				.ForMember(dest => dest.Project, opts => opts.Ignore())
-				.ForMember(dest => dest.IsBacklog, opts => opts.Ignore());
+				.ForMember(dest => dest.Project, opts => opts.Ignore());
 		}
 	}
 }
