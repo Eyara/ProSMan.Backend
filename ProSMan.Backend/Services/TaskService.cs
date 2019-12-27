@@ -91,6 +91,15 @@ namespace ProSMan.Backend.API.Services
 			}
 		}
 
+		public void DeleteByProjectId(Guid id)
+		{
+			var tasksToDelete = _dbContext.Tasks
+				.Where(task => task.ProjectId == id);
+
+			_dbContext.Tasks.RemoveRange(tasksToDelete);
+			_dbContext.SaveChanges();
+		}
+
 		private List<ITask> GetOrderedList(Expression<Func<Model.Task, Boolean>> predicate)
 		{
 			return _dbContext.Tasks

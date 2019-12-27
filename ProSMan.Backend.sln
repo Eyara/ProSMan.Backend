@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2027
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProSMan.Backend.API", "ProSMan.Backend\ProSMan.Backend.API.csproj", "{06F3586C-B8B7-4FD4-BCE9-ED401AE2A590}"
 EndProject
@@ -14,6 +14,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProSMan.Backend.Core", "ProSMan.Backend.Core\ProSMan.Backend.Core.csproj", "{E0554F35-3E90-4C26-A566-72928226DD94}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProSMan.Backend.Domain", "ProSMan.Backend.Domain\ProSMan.Backend.Domain.csproj", "{E15D326F-BAF1-4F90-BE09-F8F12830953E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7820BB79-0D40-4C79-95C0-9A22213D1AFD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prosman.Backend.UnitTests", "Prosman.Backend.UnitTests\Prosman.Backend.UnitTests.csproj", "{CC5C987C-1D0A-4AA9-8A26-5B317B3F56AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +45,10 @@ Global
 		{E15D326F-BAF1-4F90-BE09-F8F12830953E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E15D326F-BAF1-4F90-BE09-F8F12830953E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E15D326F-BAF1-4F90-BE09-F8F12830953E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC5C987C-1D0A-4AA9-8A26-5B317B3F56AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC5C987C-1D0A-4AA9-8A26-5B317B3F56AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC5C987C-1D0A-4AA9-8A26-5B317B3F56AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC5C987C-1D0A-4AA9-8A26-5B317B3F56AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,6 +56,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{036C9072-9628-410B-9FAB-0330A5F142A6} = {1EF1FC15-C8B5-4296-A38E-85B75ED29A9A}
 		{8A7DA04B-48C0-4D15-94DF-F3E8848148C6} = {1EF1FC15-C8B5-4296-A38E-85B75ED29A9A}
+		{CC5C987C-1D0A-4AA9-8A26-5B317B3F56AA} = {7820BB79-0D40-4C79-95C0-9A22213D1AFD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C263FB9E-91C0-42EE-93DE-438995B96D07}
