@@ -35,9 +35,16 @@ namespace ProSMan.Backend.API.Controllers
 		}
 
 		[HttpGet("GetByProjectId")]
-		public async Task<IActionResult> GetByProjectId(Guid id)
+		public async Task<IActionResult> GetByProjectId(Guid id, int currentPage, int pageCount)
 		{
-			return Ok(await _mediator.Send(new GetSprintsByProjectQuery(id)));
+			var model = new SprintListPagination
+			{
+				ProjectId = id,
+				CurrentPage = currentPage,
+				PageCount = pageCount
+			};
+
+			return Ok(await _mediator.Send(new GetSprintsByProjectQuery(model)));
 		}
 
 		[HttpPost]

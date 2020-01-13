@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using ProSMan.Backend.Core.Base;
 using ProSMan.Backend.Core.Interfaces.Entities;
 using ProSMan.Backend.Core.Interfaces.Services;
 using ProSMan.Backend.Domain.ViewModels;
@@ -12,8 +13,8 @@ using System.Linq.Expressions;
 
 namespace ProSMan.Backend.API.Services
 {
-    public class SprintService: ISprintService
-    {
+	public class SprintService : ISprintService
+	{
 		private ProSManContext _dbContext { get; set; }
 		private readonly IMapper _mapper;
 
@@ -28,7 +29,7 @@ namespace ProSMan.Backend.API.Services
 		{
 			return GetItem(x => x.Id == id);
 		}
-		
+
 		public List<ISprint> GetListById(Guid id)
 		{
 			return GetOrderedList(x => !x.IsDeleted && x.Id == id);
@@ -42,6 +43,11 @@ namespace ProSMan.Backend.API.Services
 		public List<ISprint> GetListByProjectId(Guid id)
 		{
 			return GetOrderedList(x => !x.IsDeleted && x.ProjectId == id);
+		}
+
+		public PaginationResponse<ISprint> GetListByProjectId(ISprintListPagination model)
+		{
+			return GetPaginateOrderedList(x => !x.IsDeleted && x.ProjectId == model.ProjectId, model.CurrentPage, model.PageCount);
 		}
 
 		public bool Add(ISprint model)
@@ -84,7 +90,7 @@ namespace ProSMan.Backend.API.Services
 			try
 			{
 				var sprint = _mapper.Map<Sprint>(model as SprintViewModel);
-				
+
 				sprint.IsFinished = true;
 				sprint.FinishedOn = DateTime.UtcNow;
 
@@ -127,6 +133,23 @@ namespace ProSMan.Backend.API.Services
 			}
 		}
 
+		public bool Delete(List<ISprint> sprints)
+		{
+			try
+			{
+				var sprintsList = _mapper.Map<List<Sprint>>(sprints.ConvertAll(sprint => sprint as SprintViewModel));
+
+				_dbContext.Sprints.RemoveRange(sprintsList);
+				_dbContext.SaveChanges();
+
+				return true;
+			}
+			catch (Exception ex)
+			{
+				return false;
+			}
+		}
+
 		private List<ISprint> GetOrderedList(Expression<Func<Sprint, Boolean>> predicate)
 		{
 			return _dbContext.Sprints
@@ -135,6 +158,33 @@ namespace ProSMan.Backend.API.Services
 				.ProjectTo<SprintViewModel>(_mapper.ConfigurationProvider)
 				.OfType<ISprint>()
 				.ToList();
+		}
+
+		private PaginationResponse<ISprint> GetPaginateOrderedList(Expression<Func<Sprint, Boolean>> predicate,
+			int currentPage = 1, int pageCount = 0)
+		{
+			var orderedList = _dbContext.Sprints
+				.Where(predicate)
+				.OrderBy(x => x.FromDate);
+
+			var totalCount = orderedList.Count();
+			var lastPage = pageCount > 0 ? (int)Math.Ceiling((double)totalCount / pageCount) : 0;
+
+			var paginatedList = orderedList
+				.Skip((currentPage - 1) * pageCount)
+				.Take(pageCount > 0 ? pageCount : totalCount)
+				.ProjectTo<SprintViewModel>(_mapper.ConfigurationProvider)
+				.OfType<ISprint>()
+				.ToList();
+
+			return new PaginationResponse<ISprint>
+			{
+				CurrentPage = currentPage,
+				PageCount = pageCount,
+				LastPage = lastPage,
+				TotalCount = totalCount,
+				Items = paginatedList
+			};
 		}
 
 		private ISprint GetItem(Expression<Func<Sprint, Boolean>> predicate)

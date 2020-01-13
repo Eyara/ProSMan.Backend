@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ProSMan.Backend.Core
+﻿namespace ProSMan.Backend.Core
 {
 	public interface IEntityBase
 	{

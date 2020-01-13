@@ -8,7 +8,6 @@ namespace ProSMan.Backend.Domain.ViewModels
 		public Guid Id { get; set; }
 		public int TimeEstimate { get; set; }
 		public Priority Priority { get; set; }
-		public Guid SprintId { get; set; }
 		public Guid CategoryId { get; set; }
     }
 }

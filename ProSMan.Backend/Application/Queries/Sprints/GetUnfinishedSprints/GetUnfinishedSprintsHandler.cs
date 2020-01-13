@@ -7,21 +7,21 @@ using System.Threading.Tasks;
 
 namespace ProSMan.Backend.API.Application.Queries.Sprints
 {
-	public class GetSprintsByProjectHandler : IRequestHandler<GetSprintsByProjectQuery, ListRequest<SprintViewModel>>
+	public class GetUnfinishedSprintsHandler : IRequestHandler<GetUnfinishedQuery, ListRequest<SprintViewModel>>
 	{
 		private ISprintService _sprintService { get; set; }
 
-		public GetSprintsByProjectHandler(
+		public GetUnfinishedSprintsHandler(
 			ISprintService sprintService)
 		{
 			_sprintService = sprintService;
 		}
 
-		public async Task<ListRequest<SprintViewModel>> Handle(GetSprintsByProjectQuery request,
+		public async Task<ListRequest<SprintViewModel>> Handle(GetUnfinishedQuery request,
 			CancellationToken cancellationToken)
 		{
 			var result = _sprintService
-				.GetListByProjectId(request.Id);
+				.GetUnfinishedListByProjectId(request.Id);
 			return new ListRequest<SprintViewModel>(result
 				.ConvertAll(x => x as SprintViewModel));
 		}
