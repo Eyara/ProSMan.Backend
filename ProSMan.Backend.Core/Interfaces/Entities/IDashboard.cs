@@ -1,32 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ProSMan.Backend.Core.Interfaces.Entities
 {
-    public interface IDashboard
+	public interface IDashboard
     {
-		double AverageDayHours { get; set; }
 		List<IProjectDashboard> Projects { get; set; }
 	}
 
 	public interface IProjectDashboard
 	{
 		string Name { get; set; }
-		List<ISprintDashboard> Sprints { get; set; }
+		IOverviewProjectDashboard Overview { get; set; }
 		List<ICategoryDashboard> Categories { get; set; }
 	}
 
-	public interface ISprintDashboard
+	public interface IOverviewProjectDashboard
 	{
-		string Name { get; set; }
-		int TaskCount { get; set; }
-		List<ITaskDashboard> Tasks { get; set; }
-	}
-
-	public interface ITaskDashboard
-	{
-		DateTime Date { get; set; }
-		int Count { get; set; }
+		double AverageHoursInSprint { get; set; }
+		double AverageTasksInSprint { get; set; }
+		int TotalSprints { get; set; }
+		int TotalBacklogTasks { get; set; }
+		int TotalNonSprintTasks { get; set; }
 	}
 
 	public interface ICategoryDashboard

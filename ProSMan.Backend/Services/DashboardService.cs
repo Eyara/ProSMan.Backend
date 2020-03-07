@@ -1,9 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ProSMan.Backend.Core.Interfaces.Entities;
+﻿using ProSMan.Backend.Core.Interfaces.Entities;
 using ProSMan.Backend.Core.Interfaces.Services;
 using ProSMan.Backend.Domain.ViewModels;
 using ProSMan.Backend.Infrastructure;
-using ProSMan.Backend.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,13 +21,10 @@ namespace ProSMan.Backend.API.Services
 		{
 			var projects = GetProjectDashboard(username);
 
-			return new DashboardViewModel(projects)
-			{
-				AverageDayHours = GetAverageDayHours(username),
-			};
+			return new DashboardViewModel(projects);
 		}
 
-		private List<ProjectDashboard> GetProjectDashboard(string username)
+		public List<ProjectDashboard> GetProjectDashboard(string username)
 		{
 			var projects = _dbContext.Projects
 				.Where(x => x.User.UserName == username && !x.IsDeleted)
@@ -37,12 +32,9 @@ namespace ProSMan.Backend.API.Services
 
 			var projectList = new List<ProjectDashboard>();
 
-			foreach(var project in projects)
+			foreach (var project in projects)
 			{
-				var sprint = GetSprintDashboard(project.Id);
-				var category = GetCategoryDashboard(project.Id);
-
-				projectList.Add(new ProjectDashboard(GetSprintDashboard(project.Id), 
+				projectList.Add(new ProjectDashboard(GetOverviewProject(project.Id),
 					GetCategoryDashboard(project.Id))
 				{
 					Name = project.Name
@@ -52,37 +44,25 @@ namespace ProSMan.Backend.API.Services
 			return projectList;
 		}
 
-		private List<SprintDashboard> GetSprintDashboard(Guid projectId)
+		public OverviewProjectDashboard GetOverviewProject(Guid projectId)
 		{
-			var sprints = _dbContext.Sprints
-				.Where(x => x.ProjectId == projectId && !x.IsDeleted)
-				.OrderBy(x => x.FromDate)
-				.ToList();
+			var totalTaskCount = _dbContext.Tasks.Count(task => task.ProjectId == projectId);
+			var totalSprintCount = _dbContext.Sprints.Count(sprint => sprint.ProjectId == projectId && !sprint.IsDeleted);
+			var totalHoursCount = _dbContext.Tasks
+					.Where(task => task.ProjectId == projectId)
+					.Sum(task => task.TimeEstimate);
 
-			return sprints
-				.Select(x => new SprintDashboard(GetTaskDashboard(x.Id))
-				{
-					Name = x.Name,
-					TaskCount = GetTaskDashboard(x.Id).ConvertAll(t => t as ITaskDashboard).Count()
-				})
-				.ToList();
+			return new OverviewProjectDashboard
+			{
+				TotalBacklogTasks = _dbContext.BacklogTasks.Count(task => task.ProjectId == projectId),
+				TotalNonSprintTasks = _dbContext.NonSprintTasks.Count(task => task.ProjectId == projectId),
+				TotalSprints = totalSprintCount,
+				AverageHoursInSprint = Math.Round(totalHoursCount / (double)totalSprintCount, 2),
+				AverageTasksInSprint = Math.Round(totalTaskCount / (double)totalSprintCount, 2)
+			};
 		}
 
-		private List<TaskDashboard> GetTaskDashboard(Guid sprintId)
-		{
-			return _dbContext.Tasks
-				.Where(x => x.SprintId == sprintId && x.FinishedOn.HasValue)
-				.OrderBy(x => x.Date)
-				.GroupBy(x => x.FinishedOn)
-				.Select(x => new TaskDashboard
-				{
-					Date = x.Key.Value,
-					Count = x.Count()
-				})
-				.ToList();
-		}
-
-		private List<CategoryDashboard> GetCategoryDashboard(Guid projectId)
+		public List<CategoryDashboard> GetCategoryDashboard(Guid projectId)
 		{
 			var categoriesQuery = _dbContext.Categories
 				.Where(x => x.ProjectId == projectId && !x.IsDeleted);
@@ -101,36 +81,6 @@ namespace ProSMan.Backend.API.Services
 						Convert.ToDouble(tasksCount), 3)
 				})
 				.ToList();
-		}
-
-		private double GetAverageDayHours(string username)
-		{
-			var minTaskDate = _dbContext.Tasks
-				.Min(x => x.Date);
-
-			var minNonSprintTaskDate = _dbContext.NonSprintTasks
-				.Min(x => x.Date);
-
-			minTaskDate = minTaskDate.HasValue ? minTaskDate.Value : DateTime.UtcNow;
-			minNonSprintTaskDate = minNonSprintTaskDate.HasValue ? minNonSprintTaskDate.Value : DateTime.UtcNow;
-
-			var minDate = minTaskDate.Value < minNonSprintTaskDate.Value
-				? minTaskDate.Value
-				: minNonSprintTaskDate.Value;
-
-			var dayCount = DateTime.UtcNow.Subtract(minDate).TotalDays;
-
-			var tasksHours = _dbContext.Tasks
-				.Where(x => x.Project.User.UserName == username && x.IsFinished)
-				.Sum(x => x.TimeEstimate);
-
-			var nonSprintTasksHours = _dbContext.NonSprintTasks
-				.Where(x => x.Project.User.UserName == username && x.IsFinished)
-				.Sum(x => x.TimeEstimate);
-
-			var averageDayHours = (tasksHours + nonSprintTasksHours) / dayCount;
-
-			return averageDayHours;
 		}
 	}
 }
