@@ -10,6 +10,7 @@ COPY ProSMan.Backend.Core/ProSMan.Backend.Core.csproj ProSMan.Backend.Core/
 COPY ProSMan.Backend.Domain/ProSMan.Backend.Domain.csproj ProSMan.Backend.Domain/
 COPY ProSMan.Backend.Infrastructure/ProSMan.Backend.Infrastructure.csproj ProSMan.Backend.Infrastructure/
 COPY ProSMan.Backend.Model/ProSMan.Backend.Model.csproj ProSMan.Backend.Model/
+COPY ProSMan.Backend.UnitTests/Prosman.Backend.UnitTests.csproj Prosman.Backend.UnitTests/
 
 RUN dotnet restore -nowarn:msb3202,nu1503
 COPY . .
