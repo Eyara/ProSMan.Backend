@@ -3,7 +3,7 @@ using System;
 
 namespace ProSMan.Backend.Domain.ViewModels
 {
-    public class SprintViewModel : ISprint
+	public class SprintViewModel : ISprint
     {
 		public Guid Id { get; set; }
 		public string Name { get; set; }

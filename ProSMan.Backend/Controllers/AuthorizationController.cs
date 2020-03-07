@@ -99,9 +99,6 @@ namespace HealthyWorkout.Backend.Controllers
 		[HttpPost("register")]
 		public async Task<IActionResult> Register(RegistrationViewModel model)
 		{
-			Console.WriteLine(model.Fullname);
-			Console.WriteLine(model.Password);
-			Console.WriteLine(model.Username);
 			var userIsExist = (await _userManager.FindByNameAsync(model.Username)) != null;
 
 			if (userIsExist)

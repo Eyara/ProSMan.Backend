@@ -12,8 +12,8 @@ using System.Linq.Expressions;
 
 namespace ProSMan.Backend.API.Services
 {
-    public class CategoryService: ICategoryService
-    {
+	public class CategoryService : ICategoryService
+	{
 		private ProSManContext _dbContext { get; set; }
 		private readonly IMapper _mapper;
 
@@ -28,7 +28,7 @@ namespace ProSMan.Backend.API.Services
 		{
 			return GetItem(x => x.Id == id);
 		}
-		
+
 		public List<ICategory> GetListById(Guid id)
 		{
 			return GetOrderedList(x => !x.IsDeleted && x.Id == id);
@@ -73,7 +73,7 @@ namespace ProSMan.Backend.API.Services
 				return false;
 			}
 		}
-		
+
 		public bool Delete(ICategory model)
 		{
 			try
@@ -90,6 +90,15 @@ namespace ProSMan.Backend.API.Services
 			{
 				return false;
 			}
+		}
+
+		public void DeleteByProjectId(Guid id)
+		{
+			var categoriesToDelete = _dbContext.Categories
+				.Where(category => category.ProjectId == id);
+
+			_dbContext.RemoveRange(categoriesToDelete);
+			_dbContext.SaveChanges();
 		}
 
 		private List<ICategory> GetOrderedList(Expression<Func<Category, Boolean>> predicate)

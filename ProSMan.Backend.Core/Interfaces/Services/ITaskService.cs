@@ -12,5 +12,6 @@ namespace ProSMan.Backend.Core.Interfaces.Services
 		bool Add(ITask model);
 		bool Update(ITask model);
 		bool Delete(ITask model);
+		void DeleteByProjectId(Guid id);
 	}
 }

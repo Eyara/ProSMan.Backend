@@ -1,8 +1,9 @@
-﻿using System;
+﻿using ProSMan.Backend.Core.Interfaces.Entities;
+using System;
 
 namespace ProSMan.Backend.Model
 {
-	public class BacklogTask
+	public class BacklogTask: IBacklogTask
 	{
 		public BacklogTask()
 		{

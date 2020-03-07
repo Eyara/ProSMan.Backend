@@ -1,12 +1,10 @@
 ﻿using ProSMan.Backend.Core.Interfaces.Entities;
-using System;
 using System.Collections.Generic;
 
 namespace ProSMan.Backend.Domain.ViewModels
 {
-    public class DashboardViewModel: IDashboard
+	public class DashboardViewModel: IDashboard
 	{
-		public double AverageDayHours { get; set; }
 		public List<IProjectDashboard> Projects { get; set; }
 
 		public DashboardViewModel(List<ProjectDashboard> projects)
@@ -18,33 +16,24 @@ namespace ProSMan.Backend.Domain.ViewModels
 	public class ProjectDashboard: IProjectDashboard
 	{
 		public string Name { get; set; }
-		public List<ISprintDashboard> Sprints { get; set; }
+		public IOverviewProjectDashboard Overview { get; set; }
 		public List<ICategoryDashboard> Categories { get; set; }
 
-		public ProjectDashboard(List<SprintDashboard> sprints,
+		public ProjectDashboard(OverviewProjectDashboard overview,
 			List<CategoryDashboard> categories)
 		{
-			Sprints = sprints.ConvertAll(x => x as ISprintDashboard);
+			Overview = overview;
 			Categories = categories.ConvertAll(x => x as ICategoryDashboard);
 		}
 	}
 
-	public class SprintDashboard: ISprintDashboard
+	public class OverviewProjectDashboard: IOverviewProjectDashboard
 	{
-		public string Name { get; set; }
-		public int TaskCount { get; set; }
-		public List<ITaskDashboard> Tasks { get; set; }
-
-		public SprintDashboard(List<TaskDashboard> tasks)
-		{
-			Tasks = tasks.ConvertAll(x => x as ITaskDashboard);
-		}
-	}
-
-	public class TaskDashboard: ITaskDashboard
-	{
-		public DateTime Date { get; set; }
-		public int Count { get; set; }
+		public double AverageHoursInSprint { get; set; }
+		public double AverageTasksInSprint { get; set; }
+		public int TotalSprints { get; set; }
+		public int TotalBacklogTasks { get; set; }
+		public int TotalNonSprintTasks { get; set; }
 	}
 
 	public class CategoryDashboard: ICategoryDashboard

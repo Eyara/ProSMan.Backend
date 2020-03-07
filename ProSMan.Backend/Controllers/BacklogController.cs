@@ -28,7 +28,7 @@ namespace ProSMan.Backend.API.Controllers
 			return Ok(await _mediator.Send(new GetBacklogByProjectQuery(projectId)));
 		}
 
-		[HttpPost("Backlog")]
+		[HttpPost]
 		public async Task<IActionResult> Backlog([FromBody] BacklogTaskViewModel model)
 		{
 			return Ok(await _mediator.Send(new AddBacklogCommand(model)));
